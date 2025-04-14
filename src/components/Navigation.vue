@@ -152,7 +152,7 @@ const navigationLinks = [
 const currentUser = {
   name: 'Александр',
   role: 'Цифровой Создатель',
-  avatar: 'https://via.placeholder.com/40',
+  avatar: 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y',
   status: 'online'
 };
 

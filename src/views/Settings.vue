@@ -12,7 +12,7 @@
         <div class="profile-card">
           <div class="avatar-container">
             <div class="avatar-wrapper">
-              <img src="https://via.placeholder.com/150" alt="Profile" class="profile-avatar">
+              <img src="https://www.gravatar.com/avatar/00000000000000000000000000000000?d=identicon&s=150&f=y" alt="Profile" class="profile-avatar">
               <div class="avatar-overlay">
                 <v-icon>mdi-camera</v-icon>
               </div>

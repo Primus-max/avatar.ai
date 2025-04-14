@@ -35,6 +35,7 @@
         <div class="particle"></div>
         <div class="particle"></div>
         <div class="particle"></div>
+        <div class="particle"></div>
       </div>
     </div>
 
@@ -225,17 +226,17 @@ const posts = ref([
     id: 1,
     author: {
       name: 'Neo',
-      avatar: 'https://via.placeholder.com/50'
+      avatar: 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=identicon&f=y'
     },
     time: '2 часа назад',
     content: 'Только что создал нового аватара с улучшенными возможностями ИИ!',
-    image: 'https://via.placeholder.com/600x400',
+    image: 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=identicon&s=600&f=y',
     liked: false,
     comments: [
       {
         author: {
           name: 'Luna',
-          avatar: 'https://via.placeholder.com/50'
+          avatar: 'https://www.gravatar.com/avatar/11111111111111111111111111111111?d=identicon&f=y'
         },
         time: '1 час назад',
         content: 'Выглядит потрясающе! Какие новые возможности добавил?'
@@ -247,11 +248,11 @@ const posts = ref([
     id: 2,
     author: {
       name: 'Luna',
-      avatar: 'https://via.placeholder.com/50'
+      avatar: 'https://www.gravatar.com/avatar/11111111111111111111111111111111?d=identicon&f=y'
     },
     time: '5 часов назад',
     content: 'Поделюсь своим новым художественным проектом, созданным с помощью моего аватара',
-    image: 'https://via.placeholder.com/600x400',
+    image: 'https://www.gravatar.com/avatar/22222222222222222222222222222222?d=identicon&s=600&f=y',
     liked: true,
     comments: [],
     newComment: ''
@@ -313,7 +314,7 @@ const addComment = (post) => {
     post.comments.push({
       author: {
         name: 'Current User',
-        avatar: 'https://via.placeholder.com/50'
+        avatar: 'https://www.gravatar.com/avatar/33333333333333333333333333333333?d=identicon&f=y'
       },
       time: 'Только что',
       content: post.newComment
