@@ -338,8 +338,8 @@ const logout = () => {
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        width: 30px;
-        height: 30px;
+        width: 24px;
+        height: 24px;
         border-radius: 50%;
         background: radial-gradient(circle, rgba($primary, 0.2) 0%, rgba($primary, 0) 70%);
         transition: all $transition-normal;
@@ -382,8 +382,8 @@ const logout = () => {
         }
         
         .link-glow {
-          width: 50px;
-          height: 50px;
+          width: 40px;
+          height: 40px;
           opacity: 0.8;
         }
       }
@@ -412,8 +412,8 @@ const logout = () => {
         }
         
         .link-glow {
-          width: 65px;
-          height: 65px;
+          width: 50px;
+          height: 50px;
           background: radial-gradient(circle, rgba($primary, 0.9) 0%, rgba($primary, 0) 70%);
           animation: pulse 3s infinite;
           opacity: 1;
