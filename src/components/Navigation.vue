@@ -207,11 +207,11 @@ const logout = () => {
   max-width: $container-max-width;
   height: 100%;
   margin: 0 auto;
-  padding: 0 $container-padding;
+  padding: 0 $spacing-md;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: $spacing-xl;
+  gap: $spacing-md;
 }
 
 .nav-logo {
@@ -221,11 +221,12 @@ const logout = () => {
   text-decoration: none;
   color: $text-primary;
   z-index: 2;
+  min-width: 150px;
 
   .logo-avatar {
     position: relative;
-    width: 40px;
-    height: 40px;
+    width: 32px;
+    height: 32px;
     border-radius: 50%;
     overflow: hidden;
     
@@ -242,7 +243,7 @@ const logout = () => {
       width: 100%;
       height: 100%;
       border-radius: 50%;
-      box-shadow: 0 0 20px rgba($primary, 0.8);
+      box-shadow: 0 0 15px rgba($primary, 0.7);
       animation: pulse 3s infinite;
     }
   }
@@ -255,6 +256,20 @@ const logout = () => {
     -webkit-text-fill-color: transparent;
     text-shadow: 0 0 10px rgba($primary, 0.5);
   }
+  
+  &:hover {
+    .logo-glow {
+      box-shadow: 0 0 30px rgba($primary, 1);
+    }
+    
+    .logo-text {
+      text-shadow: 0 0 18px rgba($primary, 0.7);
+      
+      &:after {
+        animation: glowLine 2s infinite alternate;
+      }
+    }
+  }
 }
 
 .nav-links-container {
@@ -265,7 +280,11 @@ const logout = () => {
 
 .nav-links {
   display: flex;
-  gap: $spacing-md;
+  gap: $spacing-xs;
+  
+  @media (min-width: $breakpoint-lg) {
+    justify-content: center;
+  }
   
   .nav-link {
     position: relative;
@@ -351,8 +370,8 @@ const logout = () => {
       
       .link-avatar-container {
         .link-icon {
-          filter: drop-shadow(0 0 3px rgba($primary, 0.5));
-          transform: translateY(-2px);
+          filter: drop-shadow(0 0 5px rgba($primary, 0.6));
+          transform: translateY(-2px) scale(1.1);
         }
         
         .link-glow {
@@ -371,8 +390,8 @@ const logout = () => {
 
     &.active {
       color: white;
-      background: linear-gradient(135deg, rgba($primary, 0.2), rgba($accent, 0.2));
-      box-shadow: inset 0 0 15px rgba($primary, 0.2), 0 0 15px rgba($primary, 0.3);
+      background: linear-gradient(135deg, rgba($primary, 0.25), rgba($accent, 0.25));
+      box-shadow: inset 0 0 15px rgba($primary, 0.3), 0 0 20px rgba($primary, 0.4);
       
       &:before {
         opacity: 1;
@@ -381,21 +400,21 @@ const logout = () => {
       
       .link-avatar-container {
         .link-icon {
-          filter: drop-shadow(0 0 5px rgba($primary, 0.7));
-          transform: scale(1.1);
+          filter: drop-shadow(0 0 8px rgba($primary, 0.8));
+          transform: scale(1.15);
         }
         
         .link-glow {
-          width: 60px;
-          height: 60px;
-          background: radial-gradient(circle, rgba($primary, 0.8) 0%, rgba($primary, 0) 70%);
+          width: 65px;
+          height: 65px;
+          background: radial-gradient(circle, rgba($primary, 0.9) 0%, rgba($primary, 0) 70%);
           animation: pulse 3s infinite;
           opacity: 1;
         }
       }
       
       .link-text {
-        text-shadow: 0 0 5px rgba($primary, 0.5);
+        text-shadow: 0 0 8px rgba($primary, 0.7);
         
         &:after {
           width: 100%;
@@ -411,21 +430,10 @@ const logout = () => {
         left: 0;
         width: 100%;
         height: 2px;
-        background: linear-gradient(90deg, transparent, $primary, transparent);
+        background: linear-gradient(90deg, transparent, $primary, $accent, transparent);
         animation: glowLine 3s infinite alternate;
       }
     }
-  }
-}
-
-@keyframes glowLine {
-  0% {
-    opacity: 0.5;
-    box-shadow: 0 0 5px rgba($primary, 0.3);
-  }
-  100% {
-    opacity: 1;
-    box-shadow: 0 0 10px rgba($primary, 0.7);
   }
 }
 
@@ -437,7 +445,11 @@ const logout = () => {
 
 .search-bar {
   position: relative;
-  width: 240px;
+  width: 200px;
+  
+  @media (min-width: $breakpoint-xl) {
+    width: 240px;
+  }
 
   .search-icon {
     position: absolute;
@@ -447,6 +459,7 @@ const logout = () => {
     color: $text-secondary;
     pointer-events: none;
     z-index: 1;
+    transition: all $transition-normal;
   }
 
   input {
@@ -454,7 +467,7 @@ const logout = () => {
     height: $input-height;
     padding: 0 $spacing-md 0 ($spacing-md * 2 + 24px);
     background: rgba($surface, 0.3);
-    border: 1px solid rgba($primary, 0.2);
+    border: 1px solid rgba($primary, 0.3);
     border-radius: $border-radius-full;
     color: $text-primary;
     font-size: $font-size-sm;
@@ -468,8 +481,17 @@ const logout = () => {
 
     &:focus {
       background: rgba($surface-light, 0.3);
-      border-color: rgba($primary, 0.5);
+      border-color: rgba($primary, 0.7);
       outline: none;
+      
+      & + .search-glow {
+        box-shadow: 0 0 20px rgba($primary, 0.4);
+      }
+      
+      & ~ .search-icon {
+        color: $primary;
+        filter: drop-shadow(0 0 5px rgba($primary, 0.6));
+      }
     }
   }
 
@@ -485,25 +507,69 @@ const logout = () => {
     pointer-events: none;
     
     &.active {
-      box-shadow: 0 0 15px rgba($primary, 0.3);
+      box-shadow: 0 0 20px rgba($primary, 0.4);
     }
+  }
+  
+  &:hover .search-icon {
+    color: $text-primary;
   }
 }
 
 .user-avatar-container {
   display: flex;
   align-items: center;
-  gap: $spacing-sm;
-  padding: $spacing-sm $spacing-md;
-  background: rgba($surface, 0.3);
-  border: 1px solid rgba($primary, 0.2);
+  gap: $spacing-xs;
+  padding: $spacing-xs $spacing-sm;
+  background: linear-gradient(135deg, rgba($surface, 0.3), rgba($primary, 0.1));
+  border: 1px solid rgba($primary, 0.3);
   border-radius: $border-radius-full;
   cursor: pointer;
   transition: all $transition-normal;
+  position: relative;
+  overflow: hidden;
+  
+  @media (min-width: $breakpoint-md) {
+    gap: $spacing-sm;
+    padding: $spacing-sm $spacing-md;
+  }
+
+  &:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 150%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba($primary, 0.1), transparent);
+    transform: translateX(-100%);
+    transition: transform 0.5s ease;
+  }
 
   &:hover {
-    background: rgba($surface-light, 0.3);
-    box-shadow: 0 0 15px rgba($primary, 0.2);
+    background: linear-gradient(135deg, rgba($surface-light, 0.3), rgba($primary, 0.15));
+    box-shadow: 0 0 20px rgba($primary, 0.3);
+    
+    &:before {
+      transform: translateX(100%);
+    }
+    
+    .user-avatar {
+      .avatar-glow {
+        &.online {
+          box-shadow: 0 0 15px rgba($success, 1);
+        }
+      }
+    }
+    
+    .user-name {
+      text-shadow: 0 0 5px rgba($primary, 0.5);
+    }
+    
+    .mdi-chevron-down {
+      color: $text-primary;
+      filter: drop-shadow(0 0 3px rgba($primary, 0.5));
+    }
   }
 
   .user-avatar {
@@ -517,6 +583,7 @@ const logout = () => {
       width: 100%;
       height: 100%;
       object-fit: cover;
+      transition: all $transition-normal;
     }
 
     .avatar-glow {
@@ -526,6 +593,7 @@ const logout = () => {
       width: 100%;
       height: 100%;
       border-radius: 50%;
+      transition: all $transition-normal;
       
       &.online {
         box-shadow: 0 0 10px rgba($success, 0.8);
@@ -544,31 +612,34 @@ const logout = () => {
   .user-name {
     font-weight: $font-weight-medium;
     color: $text-primary;
+    transition: all $transition-normal;
   }
 
   .mdi-chevron-down {
     color: $text-secondary;
-    transition: transform $transition-normal;
+    transition: all $transition-normal;
 
     &.menu-open {
       transform: rotate(180deg);
+      color: $primary;
+      filter: drop-shadow(0 0 3px rgba($primary, 0.5));
     }
   }
 }
 
 .menu-content {
-  background: rgba($surface, 0.9);
+  background: rgba($surface, 0.95);
   backdrop-filter: blur(15px);
   -webkit-backdrop-filter: blur(15px);
   border-radius: $border-radius-lg;
-  border: 1px solid rgba($primary, 0.2);
+  border: 1px solid rgba($primary, 0.3);
   overflow: hidden;
   min-width: 260px;
-  box-shadow: 0 0 30px rgba($primary, 0.3);
+  box-shadow: 0 0 35px rgba($primary, 0.4);
 
   .menu-header {
     padding: $spacing-lg;
-    background: linear-gradient(135deg, rgba($background, 0.7), rgba($surface, 0.7));
+    background: linear-gradient(135deg, rgba($background, 0.7), rgba($primary, 0.15));
     display: flex;
     align-items: center;
     gap: $spacing-md;
@@ -582,7 +653,7 @@ const logout = () => {
       left: 0;
       width: 100%;
       height: 100%;
-      background: linear-gradient(45deg, rgba($primary, 0) 0%, rgba($primary, 0.1) 50%, rgba($primary, 0) 100%);
+      background: linear-gradient(45deg, rgba($primary, 0) 0%, rgba($primary, 0.2) 50%, rgba($primary, 0) 100%);
       animation: sweep 3s infinite linear;
     }
 
@@ -596,7 +667,7 @@ const logout = () => {
         height: 100%;
         border-radius: 50%;
         object-fit: cover;
-        border: 2px solid rgba($primary, 0.3);
+        border: 2px solid rgba($primary, 0.5);
       }
       
       .menu-avatar-glow {
@@ -606,8 +677,8 @@ const logout = () => {
         width: 100%;
         height: 100%;
         border-radius: 50%;
-        box-shadow: 0 0 15px rgba($primary, 0.7);
-        animation: pulse 3s infinite;
+        box-shadow: 0 0 20px rgba($primary, 0.8);
+        animation: pulseLogo 3s infinite;
       }
     }
 
@@ -619,6 +690,7 @@ const logout = () => {
         font-weight: $font-weight-semibold;
         color: $text-primary;
         font-size: $font-size-lg;
+        text-shadow: 0 0 5px rgba($primary, 0.3);
       }
 
       .menu-user-role {
@@ -629,6 +701,7 @@ const logout = () => {
           content: '⦿';
           color: $primary;
           margin-right: $spacing-xs;
+          text-shadow: 0 0 5px rgba($primary, 0.5);
         }
       }
     }
@@ -663,6 +736,7 @@ const logout = () => {
         .v-icon {
           color: $text-secondary;
           z-index: 1;
+          transition: all $transition-normal;
         }
         
         .action-glow {
@@ -679,16 +753,18 @@ const logout = () => {
       }
 
       &:hover {
-        background: rgba($primary, 0.1);
+        background: linear-gradient(135deg, rgba($primary, 0.05), rgba($primary, 0.15));
         
         .action-icon-container {
           .v-icon {
             color: $primary;
+            filter: drop-shadow(0 0 5px rgba($primary, 0.6));
+            transform: scale(1.1);
           }
           
           .action-glow {
-            width: 40px;
-            height: 40px;
+            width: 45px;
+            height: 45px;
           }
         }
         
@@ -699,7 +775,11 @@ const logout = () => {
           right: 0;
           width: 5px;
           height: 100%;
-          background: linear-gradient(to bottom, rgba($primary, 0), rgba($primary, 0.5), rgba($primary, 0));
+          background: linear-gradient(to bottom, rgba($primary, 0), rgba($primary, 0.7), rgba($primary, 0));
+        }
+        
+        span {
+          text-shadow: 0 0 5px rgba($primary, 0.3);
         }
       }
     }
@@ -729,6 +809,12 @@ const logout = () => {
       &:hover {
         background: rgba($error, 0.2);
         box-shadow: 0 0 15px rgba($error, 0.3);
+        text-shadow: 0 0 5px rgba($error, 0.5);
+        
+        .v-icon {
+          filter: drop-shadow(0 0 5px rgba($error, 0.5));
+          transform: translateX(-2px);
+        }
         
         &:before {
           content: '';
@@ -737,9 +823,13 @@ const logout = () => {
           left: 0;
           width: 100%;
           height: 100%;
-          background: linear-gradient(45deg, rgba($error, 0) 0%, rgba($error, 0.1) 50%, rgba($error, 0) 100%);
+          background: linear-gradient(45deg, rgba($error, 0) 0%, rgba($error, 0.2) 50%, rgba($error, 0) 100%);
           animation: sweep 2s infinite linear;
         }
+      }
+      
+      .v-icon {
+        transition: all $transition-normal;
       }
     }
   }
@@ -765,18 +855,44 @@ const logout = () => {
   }
 }
 
-@keyframes pulse {
+@keyframes pulseLogo {
   0% {
-    opacity: 0.5;
-    box-shadow: 0 0 10px rgba($primary, 0.5);
+    opacity: 0.6;
+    box-shadow: 0 0 15px rgba($primary, 0.6);
   }
   50% {
-    opacity: 0.8;
-    box-shadow: 0 0 20px rgba($primary, 0.8);
+    opacity: 1;
+    box-shadow: 0 0 25px rgba($primary, 1);
   }
   100% {
+    opacity: 0.6;
+    box-shadow: 0 0 15px rgba($primary, 0.6);
+  }
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 0.6;
+    box-shadow: 0 0 10px rgba($primary, 0.6);
+  }
+  50% {
+    opacity: 1;
+    box-shadow: 0 0 20px rgba($primary, 1);
+  }
+  100% {
+    opacity: 0.6;
+    box-shadow: 0 0 10px rgba($primary, 0.6);
+  }
+}
+
+@keyframes glowLine {
+  0% {
     opacity: 0.5;
-    box-shadow: 0 0 10px rgba($primary, 0.5);
+    box-shadow: 0 0 5px rgba($primary, 0.5);
+  }
+  100% {
+    opacity: 1;
+    box-shadow: 0 0 10px rgba($primary, 0.8);
   }
 }
 
@@ -790,6 +906,10 @@ const logout = () => {
 }
 
 @media (max-width: $breakpoint-lg) {
+  .nav-container {
+    gap: $spacing-sm;
+  }
+  
   .menu-toggle {
     display: flex;
   }
@@ -856,7 +976,11 @@ const logout = () => {
 
 @media (max-width: $breakpoint-md) {
   .nav-container {
-    padding: 0 $spacing-md;
+    padding: 0 $spacing-sm;
+  }
+  
+  .nav-logo {
+    min-width: auto;
   }
   
   .user-avatar-container {
@@ -867,6 +991,15 @@ const logout = () => {
 }
 
 @media (max-width: $breakpoint-sm) {
+  .nav-logo {
+    min-width: auto;
+    
+    .logo-avatar {
+      width: 28px;
+      height: 28px;
+    }
+  }
+  
   .nav-container {
     padding: 0 $spacing-sm;
   }
