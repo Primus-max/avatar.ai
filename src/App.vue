@@ -11,6 +11,7 @@
         </transition>
       </router-view>
     </main>
+    <Footer />
     <div class="background-particles background-particles-top">
       <div class="particle" v-for="n in 20" :key="'top-'+n"></div>
     </div>
@@ -20,6 +21,7 @@
 <script setup>
 import '@/styles/main.scss';
 
+import Footer from '@/components/Footer.vue';
 import Navigation from '@/components/Navigation.vue';
 </script>
 
@@ -54,5 +56,16 @@ import Navigation from '@/components/Navigation.vue';
   padding: $spacing-lg;
   position: relative;
   z-index: 1;
+}
+
+// Стили для переходов между страницами
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.2s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }
 </style> 
