@@ -37,14 +37,15 @@
       </div>
 
       <div class="nav-actions">
-        <div class="search-bar">
+        <div class="search-bar" @click.stop>
           <v-icon icon="mdi-magnify" class="search-icon" />
           <input 
             type="text" 
             placeholder="Поиск..." 
             v-model="searchQuery"
-            @focus="isSearchFocused = true"
+            @focus="isSearchFocused = true; isUserMenuOpen = false"
             @blur="isSearchFocused = false"
+            @click.stop
           >
           <div class="search-glow" :class="{ active: isSearchFocused }"></div>
         </div>
@@ -61,9 +62,13 @@
         <v-menu
           v-model="isUserMenuOpen"
           :close-on-content-click="false"
+          :close-on-back="true"
           activator="parent"
-          :close-on-click="false"
+          location="bottom end"
+          offset="0,10"
+          transition="fade-transition"
           class="user-menu-dropdown"
+          persistent
         >
           <div class="menu-content">
             <div class="menu-header">
@@ -192,6 +197,11 @@ const isCurrentRoute = (path) => route.path === path;
 const toggleUserMenu = (event) => {
   if (event) {
     event.preventDefault();
+    event.stopPropagation();
+  }
+  // Закрываем поиск при открытии меню
+  if (!isUserMenuOpen.value) {
+    isSearchFocused.value = false;
   }
   isUserMenuOpen.value = !isUserMenuOpen.value;
 };
@@ -238,9 +248,24 @@ const handleScroll = () => {
   lastScrollTop.value = currentScrollTop;
 };
 
-// Установка и удаление слушателя события скроллинга
+// Функция для закрытия меню пользователя при клике вне его
+const handleClickOutside = (event) => {
+  const userMenuContainer = document.querySelector('.user-avatar-container');
+  const menuContent = document.querySelector('.menu-content');
+  
+  if (isUserMenuOpen.value && 
+      userMenuContainer && 
+      menuContent && 
+      !userMenuContainer.contains(event.target) && 
+      !menuContent.contains(event.target)) {
+    isUserMenuOpen.value = false;
+  }
+};
+
+// Установка и удаление слушателей событий
 onMounted(() => {
   window.addEventListener('scroll', handleScroll, { passive: true });
+  document.addEventListener('click', handleClickOutside);
   
   // Инициализация начального состояния
   isNavbarVisible.value = true;
@@ -249,6 +274,7 @@ onMounted(() => {
 
 onUnmounted(() => {
   window.removeEventListener('scroll', handleScroll);
+  document.removeEventListener('click', handleClickOutside);
 });
 </script>
 
@@ -694,6 +720,9 @@ onUnmounted(() => {
   align-items: center;
   gap: $spacing-xs;
   padding: $spacing-xs $spacing-sm;
+  border-radius: $border-radius-full;
+  position: relative;
+  transition: all $transition-normal;
   
   @media (min-width: 1200px) {
     gap: $spacing-sm;
@@ -710,11 +739,12 @@ onUnmounted(() => {
     background: linear-gradient(90deg, transparent, rgba($primary, 0.1), transparent);
     transform: translateX(-100%);
     transition: transform 0.5s ease;
+    border-radius: $border-radius-full;
   }
 
   &:hover {
-    background: linear-gradient(135deg, rgba($surface-light, 0.3), rgba($primary, 0.15));
-    box-shadow: 0 0 20px rgba($primary, 0.3);
+    background: linear-gradient(135deg, rgba($surface-light, 0.1), rgba($primary, 0.05));
+    box-shadow: 0 0 15px rgba($primary, 0.2);
     
     &:before {
       transform: translateX(100%);
@@ -784,6 +814,8 @@ onUnmounted(() => {
   .mdi-chevron-down {
     color: $text-secondary;
     transition: all $transition-normal;
+    margin-left: $spacing-xs;
+    font-size: 18px;
 
     &.menu-open {
       transform: rotate(180deg);
@@ -798,14 +830,16 @@ onUnmounted(() => {
   backdrop-filter: blur(15px);
   -webkit-backdrop-filter: blur(15px);
   border-radius: $border-radius-lg;
-  border: 1px solid rgba($primary, 0.3);
+  border: 1px solid rgba($primary, 0.2);
   overflow: hidden;
   min-width: 260px;
-  box-shadow: 0 0 35px rgba($primary, 0.4);
+  box-shadow: 0 0 35px rgba(0, 0, 0, 0.3), 0 0 15px rgba($primary, 0.2);
+  animation: menuAppear 0.2s ease-out;
+  transform-origin: top right;
 
   .menu-header {
     padding: $spacing-lg;
-    background: linear-gradient(135deg, rgba($background, 0.7), rgba($primary, 0.15));
+    background: linear-gradient(135deg, rgba($background, 0.7), rgba($primary, 0.1));
     display: flex;
     align-items: center;
     gap: $spacing-md;
@@ -819,7 +853,7 @@ onUnmounted(() => {
       left: 0;
       width: 100%;
       height: 100%;
-      background: linear-gradient(45deg, rgba($primary, 0) 0%, rgba($primary, 0.2) 50%, rgba($primary, 0) 100%);
+      background: linear-gradient(45deg, rgba($primary, 0) 0%, rgba($primary, 0.1) 50%, rgba($primary, 0) 100%);
       animation: sweep 3s infinite linear;
     }
 
@@ -890,6 +924,11 @@ onUnmounted(() => {
       transition: all $transition-fast;
       position: relative;
       overflow: hidden;
+      margin-bottom: $spacing-xs;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
 
       .action-icon-container {
         position: relative;
@@ -919,7 +958,8 @@ onUnmounted(() => {
       }
 
       &:hover {
-        background: linear-gradient(135deg, rgba($primary, 0.05), rgba($primary, 0.15));
+        background: linear-gradient(135deg, rgba($primary, 0.05), rgba($primary, 0.1));
+        transform: translateX(3px);
         
         .action-icon-container {
           .v-icon {
@@ -939,7 +979,7 @@ onUnmounted(() => {
           position: absolute;
           top: 0;
           right: 0;
-          width: 5px;
+          width: 3px;
           height: 100%;
           background: linear-gradient(to bottom, rgba($primary, 0), rgba($primary, 0.7), rgba($primary, 0));
         }
@@ -947,6 +987,11 @@ onUnmounted(() => {
         span {
           text-shadow: 0 0 5px rgba($primary, 0.3);
         }
+      }
+
+      &:active {
+        transform: translateX(5px);
+        background: linear-gradient(135deg, rgba($primary, 0.1), rgba($primary, 0.15));
       }
     }
   }
@@ -1154,6 +1199,17 @@ onUnmounted(() => {
   100% {
     transform: translateX(-100%);
     opacity: 0;
+  }
+}
+
+@keyframes menuAppear {
+  0% {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
   }
 }
 
