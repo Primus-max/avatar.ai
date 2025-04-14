@@ -734,7 +734,7 @@ onUnmounted(() => {
     position: absolute;
     top: 0;
     left: 0;
-    width: 130%;
+    width: 120%;
     height: 100%;
     background: linear-gradient(90deg, transparent, rgba($primary, 0.1), transparent);
     transform: translateX(-99%);
@@ -747,7 +747,7 @@ onUnmounted(() => {
     box-shadow: 0 0 15px rgba($primary, 0.2);
     
     &:before {
-      transform: translateX(100%);
+      transform: translateX(-7%);
     }
     
     .user-avatar {
