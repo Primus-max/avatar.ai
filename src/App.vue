@@ -1,7 +1,7 @@
 <template>
   <div class="app">
-    <div class="background-particles">
-      <div class="particle" v-for="n in 50" :key="n"></div>
+    <div class="background-particles background-particles-bottom">
+      <div class="particle" v-for="n in 30" :key="'bottom-'+n"></div>
     </div>
     <Navigation />
     <main class="main-content">
@@ -11,6 +11,9 @@
         </transition>
       </router-view>
     </main>
+    <div class="background-particles background-particles-top">
+      <div class="particle" v-for="n in 20" :key="'top-'+n"></div>
+    </div>
   </div>
 </template>
 
@@ -45,37 +48,6 @@ html, body {
   overflow: hidden;
 }
 
-.background-particles {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 0;
-  overflow: hidden;
-  pointer-events: none;
-  
-  .particle {
-    position: absolute;
-    width: 3px;
-    height: 3px;
-    border-radius: 50%;
-    animation: float 25s infinite linear;
-    
-    @for $i from 1 through 50 {
-      &:nth-child(#{$i}) {
-        top: random(100) * 1%;
-        left: random(100) * 1%;
-        animation-delay: random(15) * 0.5s;
-        animation-duration: (10 + random(15)) * 1s;
-        opacity: random(6) * 0.1;
-        transform: scale(random(3) * 0.5);
-        animation: float (10 + random(15)) * 1s infinite linear, colorChange (3 + random(7)) * 1s infinite alternate;
-      }
-    }
-  }
-}
-
 .main-content {
   flex: 1;
   padding-top: $nav-height;
@@ -84,6 +56,71 @@ html, body {
   margin: 0 auto;
   padding-left: $container-padding;
   padding-right: $container-padding;
+  position: relative;
+  z-index: 1;
+}
+
+.background-particles {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  pointer-events: none;
+  
+  &.background-particles-bottom {
+    top: 0;
+    left: 0;
+    z-index: -1;
+  }
+  
+  &.background-particles-top {
+    top: 0;
+    left: 0;
+    z-index: 10;
+  }
+  
+  .particle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    
+    @for $i from 1 through 30 {
+      &:nth-child(#{$i}) {
+        top: random(100) * 1%;
+        left: random(100) * 1%;
+        animation-delay: random(15) * 0.5s;
+        opacity: random(4) * 0.1;
+        transform: scale(random(3) * 0.6);
+        animation: float (10 + random(15)) * 1s infinite linear, colorChange (3 + random(7)) * 1s infinite alternate;
+      }
+    }
+  }
+}
+
+.background-particles-top {
+  .particle {
+    @for $i from 1 through 20 {
+      &:nth-child(#{$i}) {
+        top: random(100) * 1%;
+        left: random(100) * 1%;
+        animation-delay: random(15) * 0.5s;
+        opacity: random(2) * 0.1;
+        transform: scale(random(2) * 0.4);
+        animation: float (10 + random(15)) * 1s infinite linear, colorChange (3 + random(7)) * 1s infinite alternate;
+      }
+    }
+  }
+}
+
+// Стили для контентной части внутри Router View
+:deep(.view-content) {
+  background: rgba($background, 0.8);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-radius: $border-radius-lg;
+  box-shadow: 0 0 30px rgba($surface-dark, 0.3);
+  padding: $spacing-lg;
   position: relative;
   z-index: 1;
 }
