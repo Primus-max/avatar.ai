@@ -1,5 +1,5 @@
 <template>
-  <nav class="navigation" :class="{ 'nav-expanded': isMenuOpen }">
+  <nav class="navigation" :class="{ 'nav-expanded': isMenuOpen, 'nav-hidden': !isNavbarVisible }">
     <div class="nav-container">
       <router-link to="/" class="nav-logo">
         <div class="logo-avatar">
@@ -104,6 +104,8 @@
 <script setup>
 import {
   computed,
+  onMounted,
+  onUnmounted,
   ref,
 } from 'vue';
 
@@ -120,6 +122,9 @@ const isSearchFocused = ref(false);
 const isUserMenuOpen = ref(false);
 const userMenuTrigger = ref(null);
 const isMenuOpen = ref(false);
+const isNavbarVisible = ref(true);
+const lastScrollTop = ref(0);
+const scrollThreshold = 50; // Минимальное смещение скролла для изменения состояния
 
 const navigationLinks = [
   { 
@@ -186,6 +191,48 @@ const logout = () => {
   // Логика выхода
   console.log('Выход из системы...');
 };
+
+// Функция для отслеживания скроллинга
+const handleScroll = () => {
+  const currentScrollTop = window.pageYOffset || document.documentElement.scrollTop;
+  
+  // Если мы находимся в самом верху страницы, всегда показываем навбар
+  if (currentScrollTop <= 10) {
+    isNavbarVisible.value = true;
+    return;
+  }
+  
+  // Если открыто меню, не скрываем навбар
+  if (isMenuOpen.value) {
+    isNavbarVisible.value = true;
+    return;
+  }
+  
+  // Проверяем, достаточно ли прокрутили для изменения состояния
+  if (Math.abs(lastScrollTop.value - currentScrollTop) <= scrollThreshold) {
+    return;
+  }
+  
+  // Определяем направление скролла (вверх или вниз)
+  if (currentScrollTop > lastScrollTop.value) {
+    // Скролл вниз - скрываем навбар
+    isNavbarVisible.value = false;
+  } else {
+    // Скролл вверх - показываем навбар
+    isNavbarVisible.value = true;
+  }
+  
+  lastScrollTop.value = currentScrollTop;
+};
+
+// Установка и удаление слушателя события скроллинга
+onMounted(() => {
+  window.addEventListener('scroll', handleScroll, { passive: true });
+});
+
+onUnmounted(() => {
+  window.removeEventListener('scroll', handleScroll);
+});
 </script>
 
 <style lang="scss" scoped>
@@ -200,7 +247,12 @@ const logout = () => {
   -webkit-backdrop-filter: blur(15px);
   border-bottom: 1px solid rgba($primary, 0.2);
   z-index: $z-index-fixed;
-  transition: all $transition-normal;
+  transition: transform 0.3s ease, background-color 0.3s ease;
+  
+  &.nav-hidden {
+    transform: translateY(-100%);
+    box-shadow: none;
+  }
 }
 
 .nav-container {
