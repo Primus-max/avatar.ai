@@ -45,7 +45,7 @@
             v-model="searchQuery"
             @focus="isSearchFocused = true; isUserMenuOpen = false"
             @blur="isSearchFocused = false"
-            @click.stop
+            @click.stop            
           >
           <div class="search-glow" :class="{ active: isSearchFocused }"></div>
         </div>
