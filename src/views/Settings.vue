@@ -1,200 +1,513 @@
 <template>
   <div class="settings">
-    <v-container>
-      <h1 class="text-h4 mb-6">Настройки</h1>
+    <div class="settings-header">
+      <div class="header-content">
+        <h1>Настройки</h1>
+        <p class="subtitle">Управление вашим профилем и настройками</p>
+      </div>
+    </div>
 
-      <v-row>
-        <v-col cols="12" md="8">
-          <!-- Основные настройки -->
-          <v-card class="mb-6">
-            <v-card-title>Основные настройки</v-card-title>
-            <v-card-text>
-              <v-form>
-                <v-text-field
-                  v-model="settings.email"
-                  label="Email"
-                  type="email"
-                  outlined
-                />
-                <v-text-field
-                  v-model="settings.username"
-                  label="Имя пользователя"
-                  outlined
-                />
-                <v-select
-                  v-model="settings.language"
-                  :items="languages"
-                  label="Язык интерфейса"
-                  outlined
-                />
-                <v-select
-                  v-model="settings.theme"
-                  :items="themes"
-                  label="Тема оформления"
-                  outlined
-                />
-              </v-form>
-            </v-card-text>
-          </v-card>
+    <div class="settings-content">
+      <div class="settings-sidebar">
+        <div class="profile-card">
+          <div class="avatar-container">
+            <div class="avatar-wrapper">
+              <img src="https://via.placeholder.com/150" alt="Profile" class="profile-avatar">
+              <div class="avatar-overlay">
+                <v-icon>mdi-camera</v-icon>
+              </div>
+            </div>
+          </div>
+          <div class="profile-info">
+            <h2>{{ settings.username }}</h2>
+            <p class="email">{{ settings.email }}</p>
+            <div class="stats">
+              <div class="stat-item">
+                <span class="stat-value">3</span>
+                <span class="stat-label">Аватара</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-value">128</span>
+                <span class="stat-label">Друзей</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-value">1.2k</span>
+                <span class="stat-label">Подписчиков</span>
+              </div>
+            </div>
+          </div>
+        </div>
 
-          <!-- Настройки приватности -->
-          <v-card class="mb-6">
-            <v-card-title>Настройки приватности</v-card-title>
-            <v-card-text>
+        <div class="settings-menu">
+          <div 
+            v-for="(section, index) in menuSections" 
+            :key="index"
+            class="menu-item"
+            :class="{ active: activeSection === section.id }"
+            @click="activeSection = section.id"
+          >
+            <v-icon>{{ section.icon }}</v-icon>
+            <span>{{ section.title }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="settings-main">
+        <!-- Основные настройки -->
+        <div v-if="activeSection === 'general'" class="settings-section">
+          <h2>Основные настройки</h2>
+          <div class="settings-grid">
+            <div class="setting-item">
+              <label>Имя пользователя</label>
+              <v-text-field
+                v-model="settings.username"
+                variant="outlined"
+                density="compact"
+                hide-details
+              />
+            </div>
+            <div class="setting-item">
+              <label>Email</label>
+              <v-text-field
+                v-model="settings.email"
+                type="email"
+                variant="outlined"
+                density="compact"
+                hide-details
+              />
+            </div>
+            <div class="setting-item">
+              <label>Язык интерфейса</label>
+              <v-select
+                v-model="settings.language"
+                :items="languages"
+                variant="outlined"
+                density="compact"
+                hide-details
+              />
+            </div>
+            <div class="setting-item">
+              <label>Тема оформления</label>
+              <v-select
+                v-model="settings.theme"
+                :items="themes"
+                variant="outlined"
+                density="compact"
+                hide-details
+              />
+            </div>
+          </div>
+        </div>
+
+        <!-- Настройки приватности -->
+        <div v-if="activeSection === 'privacy'" class="settings-section">
+          <h2>Настройки приватности</h2>
+          <div class="privacy-settings">
+            <div class="privacy-item">
+              <div class="privacy-info">
+                <h3>Видимость профиля</h3>
+                <p>Кто может просматривать ваш профиль</p>
+              </div>
               <v-switch
                 v-model="privacy.showProfile"
-                label="Показывать профиль всем пользователям"
+                color="primary"
+                hide-details
               />
+            </div>
+            <div class="privacy-item">
+              <div class="privacy-info">
+                <h3>Активность</h3>
+                <p>Показывать вашу активность другим пользователям</p>
+              </div>
               <v-switch
                 v-model="privacy.showActivity"
-                label="Показывать мою активность"
+                color="primary"
+                hide-details
               />
+            </div>
+            <div class="privacy-item">
+              <div class="privacy-info">
+                <h3>Сообщения</h3>
+                <p>Разрешить получение сообщений от всех пользователей</p>
+              </div>
               <v-switch
                 v-model="privacy.allowMessages"
-                label="Принимать сообщения от всех пользователей"
+                color="primary"
+                hide-details
               />
-            </v-card-text>
-          </v-card>
+            </div>
+          </div>
+        </div>
 
-          <!-- Настройки уведомлений -->
-          <v-card>
-            <v-card-title>Настройки уведомлений</v-card-title>
-            <v-card-text>
+        <!-- Настройки уведомлений -->
+        <div v-if="activeSection === 'notifications'" class="settings-section">
+          <h2>Настройки уведомлений</h2>
+          <div class="notification-settings">
+            <div class="notification-item">
+              <div class="notification-info">
+                <h3>Email уведомления</h3>
+                <p>Получать уведомления на email</p>
+              </div>
               <v-switch
                 v-model="notifications.email"
-                label="Email уведомления"
+                color="primary"
+                hide-details
               />
+            </div>
+            <div class="notification-item">
+              <div class="notification-info">
+                <h3>Push уведомления</h3>
+                <p>Получать push-уведомления в браузере</p>
+              </div>
               <v-switch
                 v-model="notifications.push"
-                label="Push уведомления"
+                color="primary"
+                hide-details
               />
+            </div>
+            <div class="notification-item">
+              <div class="notification-info">
+                <h3>Уведомления о событиях</h3>
+                <p>Получать уведомления о новых событиях</p>
+              </div>
               <v-switch
                 v-model="notifications.events"
-                label="Уведомления о событиях"
+                color="primary"
+                hide-details
               />
+            </div>
+            <div class="notification-item">
+              <div class="notification-info">
+                <h3>Уведомления о сообщениях</h3>
+                <p>Получать уведомления о новых сообщениях</p>
+              </div>
               <v-switch
                 v-model="notifications.messages"
-                label="Уведомления о сообщениях"
-              />
-            </v-card-text>
-          </v-card>
-        </v-col>
-
-        <v-col cols="12" md="4">
-          <!-- Информация о профиле -->
-          <v-card class="mb-6">
-            <v-card-title>Информация о профиле</v-card-title>
-            <v-card-text class="text-center">
-              <v-avatar size="150" class="mb-4">
-                <v-img src="https://via.placeholder.com/150" />
-              </v-avatar>
-              <v-btn
-                block
                 color="primary"
-                class="mb-2"
-              >
-                Изменить аватар
-              </v-btn>
+                hide-details
+              />
+            </div>
+          </div>
+        </div>
+
+        <!-- Опасная зона -->
+        <div v-if="activeSection === 'danger'" class="settings-section">
+          <h2>Опасная зона</h2>
+          <div class="danger-zone">
+            <div class="danger-item">
+              <div class="danger-info">
+                <h3>Удаление аккаунта</h3>
+                <p>После удаления аккаунта все ваши данные будут безвозвратно удалены</p>
+              </div>
               <v-btn
-                block
-                variant="outlined"
                 color="error"
+                variant="outlined"
+                @click="deleteAccount"
               >
                 Удалить аккаунт
               </v-btn>
-            </v-card-text>
-          </v-card>
-
-          <!-- Статистика -->
-          <v-card>
-            <v-card-title>Статистика</v-card-title>
-            <v-list>
-              <v-list-item>
-                <v-list-item-title>Дата регистрации</v-list-item-title>
-                <v-list-item-subtitle>01.01.2024</v-list-item-subtitle>
-              </v-list-item>
-              <v-list-item>
-                <v-list-item-title>Количество аватаров</v-list-item-title>
-                <v-list-item-subtitle>3</v-list-item-subtitle>
-              </v-list-item>
-              <v-list-item>
-                <v-list-item-title>Активность</v-list-item-title>
-                <v-list-item-subtitle>Высокая</v-list-item-subtitle>
-              </v-list-item>
-            </v-list>
-          </v-card>
-        </v-col>
-      </v-row>
-
-      <v-row class="mt-6">
-        <v-col cols="12" class="text-right">
-          <v-btn
-            color="primary"
-            class="mr-4"
-            @click="saveSettings"
-          >
-            Сохранить изменения
-          </v-btn>
-          <v-btn
-            variant="outlined"
-            @click="resetSettings"
-          >
-            Сбросить
-          </v-btn>
-        </v-col>
-      </v-row>
-    </v-container>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup>
 import { ref } from 'vue';
 
+const activeSection = ref('general');
+
+const menuSections = [
+  { id: 'general', title: 'Основные', icon: 'mdi-cog' },
+  { id: 'privacy', title: 'Приватность', icon: 'mdi-shield-lock' },
+  { id: 'notifications', title: 'Уведомления', icon: 'mdi-bell' },
+  { id: 'danger', title: 'Опасная зона', icon: 'mdi-alert' }
+];
+
 const settings = ref({
   email: 'user@example.com',
   username: 'User123',
   language: 'Русский',
   theme: 'Тёмная'
-})
+});
 
-const languages = ['Русский', 'English', 'Español', 'Deutsch']
-const themes = ['Тёмная', 'Светлая', 'Системная']
+const languages = ['Русский', 'English', 'Español', 'Deutsch'];
+const themes = ['Тёмная', 'Светлая', 'Системная'];
 
 const privacy = ref({
   showProfile: true,
   showActivity: true,
   allowMessages: true
-})
+});
 
 const notifications = ref({
   email: true,
   push: true,
   events: true,
   messages: true
-})
+});
 
-const saveSettings = () => {
-  // Здесь будет логика сохранения настроек
-  console.log('Сохранение настроек...')
-}
-
-const resetSettings = () => {
-  // Здесь будет логика сброса настроек
-  console.log('Сброс настроек...')
-}
+const deleteAccount = () => {
+  // Логика удаления аккаунта
+  console.log('Удаление аккаунта...');
+};
 </script>
 
 <style lang="scss" scoped>
+@import '../styles/variables.scss';
+
 .settings {
-  padding: $spacing-medium;
+  min-height: 100vh;
+  background-color: $background-color;
+  color: $text-color;
 }
 
-.v-card {
+.settings-header {
+  background: linear-gradient(135deg, $primary-color, $accent-color);
+  padding: $spacing-xl;
+  color: white;
+  margin-bottom: $spacing-lg;
+
+  .header-content {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  h1 {
+    font-size: 2.5rem;
+    margin-bottom: $spacing-sm;
+  }
+
+  .subtitle {
+    opacity: 0.8;
+    font-size: 1.1rem;
+  }
+}
+
+.settings-content {
+  display: flex;
+  max-width: 1200px;
+  margin: 0 auto;
+  gap: $spacing-lg;
+  padding: 0 $spacing-lg;
+}
+
+.settings-sidebar {
+  width: 300px;
+  flex-shrink: 0;
+}
+
+.profile-card {
   background-color: $surface-color;
-  border-radius: $border-radius-medium;
+  border-radius: $border-radius-lg;
+  padding: $spacing-lg;
+  margin-bottom: $spacing-lg;
+  box-shadow: $shadow-md;
+
+  .avatar-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: $spacing-md;
+  }
+
+  .avatar-wrapper {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    overflow: hidden;
+    cursor: pointer;
+
+    &:hover .avatar-overlay {
+      opacity: 1;
+    }
+  }
+
+  .profile-avatar {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .avatar-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity $transition-normal;
+  }
+
+  .profile-info {
+    text-align: center;
+
+    h2 {
+      font-size: 1.5rem;
+      margin-bottom: $spacing-xs;
+    }
+
+    .email {
+      color: $text-secondary;
+      margin-bottom: $spacing-md;
+    }
+  }
+
+  .stats {
+    display: flex;
+    justify-content: space-around;
+    margin-top: $spacing-md;
+
+    .stat-item {
+      text-align: center;
+
+      .stat-value {
+        display: block;
+        font-size: 1.2rem;
+        font-weight: 500;
+        color: $primary-color;
+      }
+
+      .stat-label {
+        font-size: 0.9rem;
+        color: $text-secondary;
+      }
+    }
+  }
 }
 
-.v-btn {
-  text-transform: none;
+.settings-menu {
+  background-color: $surface-color;
+  border-radius: $border-radius-lg;
+  padding: $spacing-sm;
+  box-shadow: $shadow-md;
+
+  .menu-item {
+    display: flex;
+    align-items: center;
+    padding: $spacing-md;
+    cursor: pointer;
+    border-radius: $border-radius-md;
+    transition: background-color $transition-normal;
+    margin-bottom: $spacing-xs;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    &:hover {
+      background-color: $hover-color;
+    }
+
+    &.active {
+      background-color: rgba($primary-color, 0.1);
+      color: $primary-color;
+    }
+
+    .v-icon {
+      margin-right: $spacing-sm;
+    }
+  }
+}
+
+.settings-main {
+  flex-grow: 1;
+  background-color: $surface-color;
+  border-radius: $border-radius-lg;
+  padding: $spacing-xl;
+  box-shadow: $shadow-md;
+}
+
+.settings-section {
+  h2 {
+    font-size: 1.8rem;
+    margin-bottom: $spacing-lg;
+  }
+}
+
+.settings-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: $spacing-lg;
+}
+
+.setting-item {
+  label {
+    display: block;
+    margin-bottom: $spacing-xs;
+    color: $text-secondary;
+  }
+}
+
+.privacy-settings,
+.notification-settings {
+  .privacy-item,
+  .notification-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: $spacing-md;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    .privacy-info,
+    .notification-info {
+      h3 {
+        font-size: 1.1rem;
+        margin-bottom: $spacing-xs;
+      }
+
+      p {
+        color: $text-secondary;
+        font-size: 0.9rem;
+      }
+    }
+  }
+}
+
+.danger-zone {
+  .danger-item {
+    background-color: rgba($error-color, 0.1);
+    border-radius: $border-radius-md;
+    padding: $spacing-lg;
+    margin-top: $spacing-lg;
+
+    .danger-info {
+      margin-bottom: $spacing-md;
+
+      h3 {
+        color: $error-color;
+        margin-bottom: $spacing-xs;
+      }
+
+      p {
+        color: $text-secondary;
+      }
+    }
+  }
+}
+
+@media (max-width: $breakpoint-md) {
+  .settings-content {
+    flex-direction: column;
+    padding: $spacing-md;
+  }
+
+  .settings-sidebar {
+    width: 100%;
+  }
+
+  .settings-grid {
+    grid-template-columns: 1fr;
+  }
 }
 </style> 

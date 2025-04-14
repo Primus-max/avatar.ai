@@ -65,7 +65,19 @@ const menuItems = [
 </script>
 
 <style lang="scss">
-@import '@/styles/variables.scss';
+@import './styles/variables.scss';
+
+#app {
+  font-family: $font-family;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: $text-color;
+  background-color: $background-color;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
 
 .v-application {
   background-color: $background-color;

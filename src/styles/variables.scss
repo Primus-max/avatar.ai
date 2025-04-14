@@ -1,33 +1,77 @@
-// Colors
-$primary-color: #6200EE;
-$secondary-color: #03DAC6;
-$background-color: #121212;
-$surface-color: #1E1E1E;
-$error-color: #CF6679;
+// Цветовая схема
+$primary: #1976d2;
+$secondary: #26c6da;
+$accent: #82b1ff;
+$error: #ff5252;
+$info: #2196f3;
+$success: #4caf50;
+$warning: #ffc107;
 
-// Typography
+// Основные цвета
+$background: #f5f5f5;
+$surface: #ffffff;
+$border: rgba(0, 0, 0, 0.12);
+
+// Тени
+$shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
+$shadow-md: 0 4px 8px rgba(0, 0, 0, 0.1);
+$shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.1);
+
+// Отступы
+$spacing-xs: 4px;
+$spacing-sm: 8px;
+$spacing-md: 16px;
+$spacing-lg: 24px;
+$spacing-xl: 32px;
+
+// Скругления
+$border-radius-sm: 4px;
+$border-radius-md: 8px;
+$border-radius-lg: 12px;
+$border-radius-xl: 16px;
+
+// Анимации
+$transition-fast: 0.15s;
+$transition-normal: 0.3s;
+$transition-slow: 0.5s;
+
+// Шрифты
 $font-family: 'Roboto', sans-serif;
-$font-size-base: 16px;
-$font-size-small: 14px;
-$font-size-large: 18px;
+$font-size-xs: 12px;
+$font-size-sm: 14px;
+$font-size-md: 16px;
+$font-size-lg: 18px;
+$font-size-xl: 24px;
 
-// Spacing
-$spacing-unit: 8px;
-$spacing-small: $spacing-unit;
-$spacing-medium: $spacing-unit * 2;
-$spacing-large: $spacing-unit * 3;
-
-// Breakpoints
+// Медиа-запросы
 $breakpoint-sm: 600px;
 $breakpoint-md: 960px;
 $breakpoint-lg: 1264px;
 $breakpoint-xl: 1904px;
 
-// Border radius
-$border-radius-small: 4px;
-$border-radius-medium: 8px;
-$border-radius-large: 16px;
+// Фоновые цвета
+$background-color: #121212;
+$surface-color: #1E1E1E;
+$card-color: #2D2D2D;
+$hover-color: rgba(255, 255, 255, 0.05);
 
-// Transitions
-$transition-duration: 0.3s;
-$transition-timing: cubic-bezier(0.4, 0, 0.2, 1); 
+// Цветовые переменные
+$primary-color: #2196F3;
+$primary-light: #64B5F6;
+$primary-dark: #1976D2;
+$accent-color: #FF4081;
+$accent-light: #FF80AB;
+$accent-dark: #F50057;
+$error-color: #F44336;
+$success-color: #4CAF50;
+$warning-color: #FFC107;
+$info-color: #00BCD4;
+
+// Текстовые цвета
+$text-color: #FFFFFF;
+$text-secondary: rgba(255, 255, 255, 0.7);
+$text-disabled: rgba(255, 255, 255, 0.5);
+
+// Шрифты
+$font-size-base: 16px;
+$font-size-xl: 24px; 

@@ -1,4 +1,4 @@
-@import 'variables.scss';
+@import './variables.scss';
 
 // Reset and base styles
 * {
@@ -17,7 +17,7 @@ body {
 
 // Typography
 h1, h2, h3, h4, h5, h6 {
-  margin-bottom: $spacing-medium;
+  margin-bottom: $spacing-md;
   font-weight: 500;
 }
 
@@ -25,7 +25,7 @@ h1, h2, h3, h4, h5, h6 {
 .container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: $spacing-medium;
+  padding: $spacing-md;
 }
 
 // Utility classes
@@ -33,21 +33,37 @@ h1, h2, h3, h4, h5, h6 {
   text-align: center;
 }
 
-.mt-1 { margin-top: $spacing-small; }
-.mt-2 { margin-top: $spacing-medium; }
-.mt-3 { margin-top: $spacing-large; }
+.mt-1 { margin-top: $spacing-sm; }
+.mt-2 { margin-top: $spacing-md; }
+.mt-3 { margin-top: $spacing-lg; }
 
-.mb-1 { margin-bottom: $spacing-small; }
-.mb-2 { margin-bottom: $spacing-medium; }
-.mb-3 { margin-bottom: $spacing-large; }
+.mb-1 { margin-bottom: $spacing-sm; }
+.mb-2 { margin-bottom: $spacing-md; }
+.mb-3 { margin-bottom: $spacing-lg; }
 
 // Animations
 .fade-enter-active,
 .fade-leave-active {
-  transition: opacity $transition-duration $transition-timing;
+  transition: opacity $transition-normal;
 }
 
 .fade-enter-from,
 .fade-leave-to {
   opacity: 0;
+}
+
+// Медиа-запросы
+$breakpoint-xs: 600px;
+$breakpoint-sm: 960px;
+$breakpoint-md: 1264px;
+$breakpoint-lg: 1904px;
+
+@media (max-width: $breakpoint-sm) {
+  .container {
+    padding: 0 $spacing-sm;
+  }
+  
+  .v-card {
+    border-radius: $border-radius-sm;
+  }
 } 
