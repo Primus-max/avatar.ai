@@ -1,5 +1,8 @@
 <template>
   <div class="app">
+    <div class="background-particles">
+      <div class="particle" v-for="n in 50" :key="n"></div>
+    </div>
     <Navigation />
     <main class="main-content">
       <router-view v-slot="{ Component }">
@@ -38,6 +41,41 @@ html, body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+
+.background-particles {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  
+  .particle {
+    position: absolute;
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: rgba($primary, 0.6);
+    box-shadow: 0 0 10px rgba($primary, 0.8);
+    opacity: 0;
+    animation: float 25s infinite linear;
+    
+    @for $i from 1 through 50 {
+      &:nth-child(#{$i}) {
+        top: random(100) * 1%;
+        left: random(100) * 1%;
+        animation-delay: random(15) * 0.5s;
+        animation-duration: (10 + random(15)) * 1s;
+        opacity: random(6) * 0.1;
+        transform: scale(random(3) * 0.5);
+      }
+    }
+  }
 }
 
 .main-content {
@@ -48,6 +86,8 @@ html, body {
   margin: 0 auto;
   padding-left: $container-padding;
   padding-right: $container-padding;
+  position: relative;
+  z-index: 1;
 }
 
 // Анимации переходов
@@ -135,6 +175,24 @@ p {
   
   &:last-child {
     margin-bottom: 0;
+  }
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0) translateX(0);
+  }
+  25% {
+    transform: translateY(-30px) translateX(15px);
+  }
+  50% {
+    transform: translateY(-15px) translateX(30px);
+  }
+  75% {
+    transform: translateY(20px) translateX(10px);
+  }
+  100% {
+    transform: translateY(0) translateX(0);
   }
 }
 </style> 
