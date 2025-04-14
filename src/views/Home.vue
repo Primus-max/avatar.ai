@@ -143,8 +143,6 @@ const learnMore = () => {
 </script>
 
 <style lang="scss" scoped>
-@import '../styles/variables.scss';
-
 .home {
   min-height: 100vh;
   background: linear-gradient(135deg, #1a1a2e, #16213e);

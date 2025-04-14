@@ -409,8 +409,6 @@ const startTraining = (trainingId) => {
 </script>
 
 <style lang="scss" scoped>
-@import '../styles/variables.scss';
-
 .avatar {
   min-height: 100vh;
   background: linear-gradient(135deg, #1a1a2e, #16213e);

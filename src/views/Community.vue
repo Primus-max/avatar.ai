@@ -306,16 +306,14 @@ const handlePostAction = (actionId, post) => {
 </script>
 
 <style lang="scss" scoped>
-@import '../styles/variables.scss';
-
 .community {
   min-height: 100vh;
-  background-color: $background-color;
-  color: $text-color;
+  color: $text-primary;
+  background: $background;
 }
 
 .community-header {
-  background: linear-gradient(135deg, $primary-color, $accent-color);
+  background: linear-gradient(135deg, $primary, $accent);
   padding: $spacing-xl;
   color: white;
   margin-bottom: $spacing-lg;
@@ -353,7 +351,7 @@ const handlePostAction = (actionId, post) => {
   }
 
   .filters {
-    background-color: $surface-color;
+    background-color: $surface;
     border-radius: $border-radius-lg;
     padding: $spacing-lg;
     margin-bottom: $spacing-lg;
@@ -384,8 +382,8 @@ const handlePostAction = (actionId, post) => {
       }
 
       &.active {
-        background-color: rgba($primary-color, 0.1);
-        color: $primary-color;
+        background-color: rgba($primary, 0.1);
+        color: $primary;
       }
 
       .v-icon {
@@ -395,7 +393,7 @@ const handlePostAction = (actionId, post) => {
   }
 
   .trending-topics {
-    background-color: $surface-color;
+    background-color: $surface;
     border-radius: $border-radius-lg;
     padding: $spacing-lg;
     box-shadow: $shadow-md;
@@ -424,7 +422,7 @@ const handlePostAction = (actionId, post) => {
       }
 
       .topic-name {
-        color: $primary-color;
+        color: $primary;
       }
 
       .topic-count {
@@ -453,7 +451,7 @@ const handlePostAction = (actionId, post) => {
 }
 
 .post-card {
-  background-color: $surface-color;
+  background-color: $surface;
   border-radius: $border-radius-lg;
   padding: $spacing-lg;
   margin-bottom: $spacing-lg;
