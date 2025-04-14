@@ -194,7 +194,7 @@ const logout = () => {
   top: 0;
   left: 0;
   right: 0;
-  height: $nav-height;
+  height: 70px;
   background: rgba($background, 0.8);
   backdrop-filter: blur(15px);
   -webkit-backdrop-filter: blur(15px);
@@ -298,7 +298,7 @@ const logout = () => {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: $spacing-sm $spacing-md;
+    padding: $spacing-sm $spacing-md $spacing-xs;
     color: $text-secondary;
     text-decoration: none;
     border-radius: $border-radius-lg;
@@ -320,8 +320,8 @@ const logout = () => {
 
     .link-avatar-container {
       position: relative;
-      width: 40px;
-      height: 40px;
+      width: 32px;
+      height: 32px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -349,7 +349,7 @@ const logout = () => {
 
     .link-text {
       font-weight: $font-weight-medium;
-      font-size: $font-size-sm;
+      font-size: $font-size-xs;
       margin-top: $spacing-xs;
       transition: all $transition-normal;
       position: relative;
@@ -931,7 +931,7 @@ const logout = () => {
   
   .nav-links-container {
     position: fixed;
-    top: $nav-height;
+    top: 70px;
     left: 0;
     width: 100%;
     height: 0;
@@ -945,7 +945,7 @@ const logout = () => {
   
   .nav-expanded {
     .nav-links-container {
-      height: calc(100vh - #{$nav-height});
+      height: calc(100vh - 70px);
       border-bottom: 1px solid rgba($primary, 0.2);
     }
     
