@@ -4,6 +4,7 @@ import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
 
 export default defineConfig({
+  base: '/avatar.ai/',  // Фиксированный базовый путь для GitHub Pages
   plugins: [vue()],
   resolve: {
     alias: {
@@ -20,5 +21,18 @@ export default defineConfig({
         additionalData: `@import "@/styles/variables.scss";`
       }
     }
+  },
+  build: {
+    outDir: 'dist',
+    assetsDir: 'assets',
+    sourcemap: false,
+    // Улучшения для деплоя на GitHub Pages
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['vue', 'vue-router', 'pinia', 'vuetify'],
+        },
+      },
+    },
   }
 }) 

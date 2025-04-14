@@ -286,7 +286,7 @@ const activeTab = ref('appearance');
 const currentAvatar = ref({
   name: 'Мой аватар',
   role: 'Исследователь',
-  image: 'https://via.placeholder.com/400',
+  image: 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=identicon&s=400&f=y',
   level: 5,
   experience: 1250,
   friends: 42,
@@ -308,24 +308,24 @@ const currentAvatar = ref({
 });
 
 const styles = [
-  { id: 'default', name: 'Стандартный', preview: 'https://via.placeholder.com/100' },
-  { id: 'futuristic', name: 'Футуристический', preview: 'https://via.placeholder.com/100' },
-  { id: 'cyberpunk', name: 'Киберпанк', preview: 'https://via.placeholder.com/100' },
-  { id: 'fantasy', name: 'Фэнтези', preview: 'https://via.placeholder.com/100' }
+  { id: 'default', name: 'Стандартный', preview: 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=identicon&s=100&f=y' },
+  { id: 'futuristic', name: 'Футуристический', preview: 'https://www.gravatar.com/avatar/11111111111111111111111111111111?d=identicon&s=100&f=y' },
+  { id: 'cyberpunk', name: 'Киберпанк', preview: 'https://www.gravatar.com/avatar/22222222222222222222222222222222?d=identicon&s=100&f=y' },
+  { id: 'fantasy', name: 'Фэнтези', preview: 'https://www.gravatar.com/avatar/33333333333333333333333333333333?d=identicon&s=100&f=y' }
 ];
 
 const clothesOptions = [
-  { id: 'casual', name: 'Повседневный', preview: 'https://via.placeholder.com/100' },
-  { id: 'formal', name: 'Формальный', preview: 'https://via.placeholder.com/100' },
-  { id: 'sport', name: 'Спортивный', preview: 'https://via.placeholder.com/100' },
-  { id: 'tech', name: 'Технологичный', preview: 'https://via.placeholder.com/100' }
+  { id: 'casual', name: 'Повседневный', preview: 'https://www.gravatar.com/avatar/44444444444444444444444444444444?d=identicon&s=100&f=y' },
+  { id: 'formal', name: 'Формальный', preview: 'https://www.gravatar.com/avatar/55555555555555555555555555555555?d=identicon&s=100&f=y' },
+  { id: 'sport', name: 'Спортивный', preview: 'https://www.gravatar.com/avatar/66666666666666666666666666666666?d=identicon&s=100&f=y' },
+  { id: 'tech', name: 'Технологичный', preview: 'https://www.gravatar.com/avatar/77777777777777777777777777777777?d=identicon&s=100&f=y' }
 ];
 
 const accessories = [
-  { id: 'glasses', name: 'Очки', preview: 'https://via.placeholder.com/100' },
-  { id: 'headphones', name: 'Наушники', preview: 'https://via.placeholder.com/100' },
-  { id: 'watch', name: 'Часы', preview: 'https://via.placeholder.com/100' },
-  { id: 'bracelet', name: 'Браслет', preview: 'https://via.placeholder.com/100' }
+  { id: 'glasses', name: 'Очки', preview: 'https://www.gravatar.com/avatar/88888888888888888888888888888888?d=identicon&s=100&f=y' },
+  { id: 'headphones', name: 'Наушники', preview: 'https://www.gravatar.com/avatar/99999999999999999999999999999999?d=identicon&s=100&f=y' },
+  { id: 'watch', name: 'Часы', preview: 'https://www.gravatar.com/avatar/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa?d=identicon&s=100&f=y' },
+  { id: 'bracelet', name: 'Браслет', preview: 'https://www.gravatar.com/avatar/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb?d=identicon&s=100&f=y' }
 ];
 
 const personalityTraits = [
@@ -409,8 +409,6 @@ const startTraining = (trainingId) => {
 </script>
 
 <style lang="scss" scoped>
-@import '../styles/variables.scss';
-
 .avatar {
   min-height: 100vh;
   background: linear-gradient(135deg, #1a1a2e, #16213e);

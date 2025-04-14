@@ -12,7 +12,7 @@
         <div class="profile-card">
           <div class="avatar-container">
             <div class="avatar-wrapper">
-              <img src="https://via.placeholder.com/150" alt="Profile" class="profile-avatar">
+              <img src="https://www.gravatar.com/avatar/00000000000000000000000000000000?d=identicon&s=150&f=y" alt="Profile" class="profile-avatar">
               <div class="avatar-overlay">
                 <v-icon>mdi-camera</v-icon>
               </div>
@@ -256,16 +256,14 @@ const deleteAccount = () => {
 </script>
 
 <style lang="scss" scoped>
-@import '../styles/variables.scss';
-
 .settings {
   min-height: 100vh;
-  background-color: $background-color;
-  color: $text-color;
+  background: $background;
+  color: $text-primary;
 }
 
 .settings-header {
-  background: linear-gradient(135deg, $primary-color, $accent-color);
+  background: linear-gradient(135deg, $primary, $accent);
   padding: $spacing-xl;
   color: white;
   margin-bottom: $spacing-lg;
@@ -300,7 +298,7 @@ const deleteAccount = () => {
 }
 
 .profile-card {
-  background-color: $surface-color;
+  background-color: $surface;
   border-radius: $border-radius-lg;
   padding: $spacing-lg;
   margin-bottom: $spacing-lg;
@@ -371,7 +369,7 @@ const deleteAccount = () => {
         display: block;
         font-size: 1.2rem;
         font-weight: 500;
-        color: $primary-color;
+        color: $primary;
       }
 
       .stat-label {
@@ -383,7 +381,7 @@ const deleteAccount = () => {
 }
 
 .settings-menu {
-  background-color: $surface-color;
+  background-color: $surface;
   border-radius: $border-radius-lg;
   padding: $spacing-sm;
   box-shadow: $shadow-md;
@@ -406,8 +404,8 @@ const deleteAccount = () => {
     }
 
     &.active {
-      background-color: rgba($primary-color, 0.1);
-      color: $primary-color;
+      background-color: rgba($primary, 0.1);
+      color: $primary;
     }
 
     .v-icon {
@@ -418,7 +416,7 @@ const deleteAccount = () => {
 
 .settings-main {
   flex-grow: 1;
-  background-color: $surface-color;
+  background-color: $surface;
   border-radius: $border-radius-lg;
   padding: $spacing-xl;
   box-shadow: $shadow-md;
@@ -476,7 +474,7 @@ const deleteAccount = () => {
 
 .danger-zone {
   .danger-item {
-    background-color: rgba($error-color, 0.1);
+    background-color: rgba($error, 0.1);
     border-radius: $border-radius-md;
     padding: $spacing-lg;
     margin-top: $spacing-lg;
@@ -485,7 +483,7 @@ const deleteAccount = () => {
       margin-bottom: $spacing-md;
 
       h3 {
-        color: $error-color;
+        color: $error;
         margin-bottom: $spacing-xs;
       }
 

@@ -23,11 +23,17 @@ const routes = [
     path: '/settings',
     name: 'Settings',
     component: () => import('@/views/Settings.vue')
+  },
+  // Перенаправление для всех других маршрутов
+  { 
+    path: '/:pathMatch(.*)*', 
+    redirect: '/' 
   }
 ]
 
+// Используем baseUrl из Vite конфигурации
 const router = createRouter({
-  history: createWebHistory(),
+  history: createWebHistory('/avatar.ai/'),
   routes
 })
 

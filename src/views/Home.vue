@@ -24,7 +24,7 @@
       </div>
       <div class="hero-preview">
         <div class="avatar-preview">
-          <img src="https://via.placeholder.com/400" alt="AI Avatar Preview" class="preview-image">
+          <img src="https://www.gravatar.com/avatar/00000000000000000000000000000000?d=identicon&s=400&f=y" alt="AI Avatar Preview" class="preview-image">
           <div class="preview-controls">
             <v-btn icon="mdi-rotate-left" variant="text" />
             <v-btn icon="mdi-rotate-right" variant="text" />
@@ -45,7 +45,10 @@
           <h3>Обучение</h3>
           <p>Аватар учится у тебя и развивается вместе с тобой</p>
           <div class="feature-preview">
-            <img src="https://via.placeholder.com/300x200" alt="Learning Preview">
+            <div class="feature-image">
+              <v-icon size="48">mdi-brain</v-icon>
+              <img src="https://www.gravatar.com/avatar/11111111111111111111111111111111?d=identicon&s=300&f=y" alt="Learning Preview">
+            </div>
           </div>
         </div>
         <div class="feature-card">
@@ -55,7 +58,10 @@
           <h3>Общение</h3>
           <p>Взаимодействуй с другими аватарами в виртуальном мире</p>
           <div class="feature-preview">
-            <img src="https://via.placeholder.com/300x200" alt="Communication Preview">
+            <div class="feature-image">
+              <v-icon size="48">mdi-account-group</v-icon>
+              <img src="https://www.gravatar.com/avatar/22222222222222222222222222222222?d=identicon&s=300&f=y" alt="Communication Preview">
+            </div>
           </div>
         </div>
         <div class="feature-card">
@@ -65,7 +71,10 @@
           <h3>Кастомизация</h3>
           <p>Создай уникальный образ и характер своего аватара</p>
           <div class="feature-preview">
-            <img src="https://via.placeholder.com/300x200" alt="Customization Preview">
+            <div class="feature-image">
+              <v-icon size="48">mdi-palette</v-icon>
+              <img src="https://www.gravatar.com/avatar/33333333333333333333333333333333?d=identicon&s=300&f=y" alt="Customization Preview">
+            </div>
           </div>
         </div>
       </div>
@@ -79,7 +88,9 @@
           <h3>Загрузи фото</h3>
           <p>Начни с загрузки своего фото или выбери готовый шаблон</p>
           <div class="step-preview">
-            <img src="https://via.placeholder.com/200" alt="Step 1">
+            <div class="step-image">
+              <img src="https://www.gravatar.com/avatar/44444444444444444444444444444444?d=identicon&s=200&f=y" alt="Step 1">
+            </div>
           </div>
         </div>
         <div class="step-card">
@@ -87,7 +98,9 @@
           <h3>Настрой внешность</h3>
           <p>Выбери стиль, одежду и аксессуары для своего аватара</p>
           <div class="step-preview">
-            <img src="https://via.placeholder.com/200" alt="Step 2">
+            <div class="step-image">
+              <img src="https://www.gravatar.com/avatar/55555555555555555555555555555555?d=identicon&s=200&f=y" alt="Step 2">
+            </div>
           </div>
         </div>
         <div class="step-card">
@@ -95,7 +108,9 @@
           <h3>Создай характер</h3>
           <p>Определи личность, интересы и манеру общения аватара</p>
           <div class="step-preview">
-            <img src="https://via.placeholder.com/200" alt="Step 3">
+            <div class="step-image">
+              <img src="https://www.gravatar.com/avatar/66666666666666666666666666666666?d=identicon&s=200&f=y" alt="Step 3">
+            </div>
           </div>
         </div>
       </div>
@@ -105,24 +120,24 @@
       <h2>Присоединяйся к сообществу</h2>
       <div class="avatars-grid">
         <div class="avatar-card">
-          <img src="https://via.placeholder.com/150" alt="Avatar 1">
-          <div class="avatar-info">
-            <h4>Neo</h4>
-            <p>Исследователь метавселенной</p>
+          <div class="avatar-preview">
+            <img src="https://www.gravatar.com/avatar/77777777777777777777777777777777?d=identicon&s=150&f=y" alt="Avatar 1">
+            <h4>Технический</h4>
+            <p>Инженер ИИ</p>
           </div>
         </div>
         <div class="avatar-card">
-          <img src="https://via.placeholder.com/150" alt="Avatar 2">
-          <div class="avatar-info">
-            <h4>Luna</h4>
+          <div class="avatar-preview">
+            <img src="https://www.gravatar.com/avatar/88888888888888888888888888888888?d=identicon&s=150&f=y" alt="Avatar 2">
+            <h4>Креативный</h4>
             <p>Цифровой художник</p>
           </div>
         </div>
         <div class="avatar-card">
-          <img src="https://via.placeholder.com/150" alt="Avatar 3">
-          <div class="avatar-info">
-            <h4>Atlas</h4>
-            <p>AI-ученый</p>
+          <div class="avatar-preview">
+            <img src="https://www.gravatar.com/avatar/99999999999999999999999999999999?d=identicon&s=150&f=y" alt="Avatar 3">
+            <h4>Социальный</h4>
+            <p>Коммуникатор</p>
           </div>
         </div>
       </div>
@@ -143,8 +158,6 @@ const learnMore = () => {
 </script>
 
 <style lang="scss" scoped>
-@import '../styles/variables.scss';
-
 .home {
   min-height: 100vh;
   background: linear-gradient(135deg, #1a1a2e, #16213e);
@@ -157,8 +170,8 @@ const learnMore = () => {
   justify-content: space-between;
   padding: $spacing-xl;
   min-height: 80vh;
-  background: linear-gradient(135deg, rgba(26, 26, 46, 0.8), rgba(22, 33, 62, 0.8)),
-              url('https://via.placeholder.com/1920x1080') center/cover;
+  background: linear-gradient(135deg, rgba(26, 26, 46, 0.9), rgba(22, 33, 62, 0.9)),
+              radial-gradient(rgba(0, 210, 255, 0.1) 1px, transparent 1px) 0 0 / 20px 20px;
 
   .hero-content {
     max-width: 600px;
@@ -264,9 +277,15 @@ const learnMore = () => {
       overflow: hidden;
       box-shadow: 0 0 20px rgba(0, 210, 255, 0.2);
 
-      img {
-        width: 100%;
-        height: auto;
+      .feature-image {
+        border-radius: $border-radius-md;
+        overflow: hidden;
+        box-shadow: 0 0 20px rgba(0, 210, 255, 0.2);
+
+        img {
+          width: 100%;
+          height: auto;
+        }
       }
     }
   }
@@ -328,9 +347,15 @@ const learnMore = () => {
       overflow: hidden;
       box-shadow: 0 0 20px rgba(0, 210, 255, 0.2);
 
-      img {
-        width: 100%;
-        height: auto;
+      .step-image {
+        border-radius: $border-radius-md;
+        overflow: hidden;
+        box-shadow: 0 0 20px rgba(0, 210, 255, 0.2);
+
+        img {
+          width: 100%;
+          height: auto;
+        }
       }
     }
   }
@@ -367,13 +392,7 @@ const learnMore = () => {
       transform: translateY(-10px);
     }
 
-    img {
-      width: 100%;
-      height: 300px;
-      object-fit: cover;
-    }
-
-    .avatar-info {
+    .avatar-preview {
       padding: $spacing-md;
 
       h4 {

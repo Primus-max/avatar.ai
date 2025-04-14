@@ -1,85 +1,58 @@
 <template>
-  <v-app>
-    <v-navigation-drawer v-model="drawer" app>
-      <v-list>
-        <v-list-item
-          v-for="(item, i) in menuItems"
-          :key="i"
-          :to="item.to"
-          router
-          exact
-        >
-          <v-list-item-action>
-            <v-icon>{{ item.icon }}</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title>{{ item.title }}</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-      </v-list>
-    </v-navigation-drawer>
-
-    <v-app-bar app>
-      <v-app-bar-nav-icon @click="drawer = !drawer" />
-      <v-toolbar-title>Avatar.AI</v-toolbar-title>
-      <v-spacer />
-      <v-btn icon>
-        <v-icon>mdi-account</v-icon>
-      </v-btn>
-    </v-app-bar>
-
-    <v-main>
-      <v-container fluid>
-        <router-view />
-      </v-container>
-    </v-main>
-  </v-app>
+  <div class="app">
+    <div class="background-particles background-particles-bottom">
+      <div class="particle" v-for="n in 30" :key="'bottom-'+n"></div>
+    </div>
+    <Navigation />
+    <main class="main-content">
+      <router-view v-slot="{ Component }">
+        <transition name="fade" mode="out-in">
+          <component :is="Component" />
+        </transition>
+      </router-view>
+    </main>
+    <div class="background-particles background-particles-top">
+      <div class="particle" v-for="n in 20" :key="'top-'+n"></div>
+    </div>
+  </div>
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import '@/styles/main.scss';
 
-const drawer = ref(false)
-const menuItems = [
-  {
-    icon: 'mdi-home',
-    title: 'Главная',
-    to: '/'
-  },
-  {
-    icon: 'mdi-account',
-    title: 'Мой аватар',
-    to: '/avatar'
-  },
-  {
-    icon: 'mdi-account-group',
-    title: 'Сообщество',
-    to: '/community'
-  },
-  {
-    icon: 'mdi-cog',
-    title: 'Настройки',
-    to: '/settings'
-  }
-]
+import Navigation from '@/components/Navigation.vue';
 </script>
 
 <style lang="scss">
-@import './styles/variables.scss';
-
-#app {
-  font-family: $font-family;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: $text-color;
-  background-color: $background-color;
+.app {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  position: relative;
+  overflow: hidden;
 }
 
-.v-application {
-  background-color: $background-color;
+.main-content {
+  flex: 1;
+  padding-top: $nav-height;
+  width: 100%;
+  max-width: $container-max-width;
+  margin: 0 auto;
+  padding-left: $container-padding;
+  padding-right: $container-padding;
+  position: relative;
+  z-index: 1;
+}
+
+// Стили для контентной части внутри Router View
+:deep(.view-content) {
+  background: rgba($background, 0.8);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-radius: $border-radius-lg;
+  box-shadow: 0 0 30px rgba($surface-dark, 0.3);
+  padding: $spacing-lg;
+  position: relative;
+  z-index: 1;
 }
 </style> 

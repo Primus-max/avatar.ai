@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <defs>
+    <!-- Градиенты и фильтры для создания эффектов свечения -->
+    <linearGradient id="gradient1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00ffcc">
+        <animate attributeName="stop-color" values="#00ffcc; #00ccff; #0099ff; #00ffcc" dur="5s" repeatCount="indefinite" />
+      </stop>
+      <stop offset="100%" stop-color="#0099ff">
+        <animate attributeName="stop-color" values="#0099ff; #00ffcc; #00ccff; #0099ff" dur="5s" repeatCount="indefinite" />
+      </stop>
+    </linearGradient>
+    
+    <linearGradient id="gradient2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00ccff">
+        <animate attributeName="stop-color" values="#00ccff; #0099ff; #00ffcc; #00ccff" dur="7s" repeatCount="indefinite" />
+      </stop>
+      <stop offset="100%" stop-color="#00ffaa">
+        <animate attributeName="stop-color" values="#00ffaa; #00ccff; #0099ff; #00ffaa" dur="7s" repeatCount="indefinite" />
+      </stop>
+    </linearGradient>
+    
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="2.5" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+    
+    <filter id="outerGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="4" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+  
+  <!-- Фоновый круг с анимацией свечения -->
+  <circle cx="32" cy="32" r="30" fill="url(#gradient1)" filter="url(#outerGlow)">
+    <animate attributeName="opacity" values="0.7;1;0.7" dur="3s" repeatCount="indefinite" />
+  </circle>
+  
+  <!-- Внутренний круг с градиентом -->
+  <circle cx="32" cy="32" r="24" fill="url(#gradient2)" filter="url(#glow)">
+    <animate attributeName="r" values="24;26;24" dur="4s" repeatCount="indefinite" />
+  </circle>
+  
+  <!-- Центральная буква "A" -->
+  <path d="M32,16 L44,48 H36 L34,44 H30 L28,48 H20 L32,16 Z M32,26 L30,34 H34 L32,26 Z" fill="#ffffff" filter="url(#glow)">
+    <animate attributeName="opacity" values="0.9;1;0.9" dur="3s" repeatCount="indefinite" />
+  </path>
+  
+  <!-- Вращающиеся эффекты вокруг логотипа -->
+  <g filter="url(#glow)">
+    <circle cx="32" cy="32" r="28" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="1" stroke-dasharray="5,5">
+      <animateTransform attributeName="transform" type="rotate" from="0 32 32" to="360 32 32" dur="20s" repeatCount="indefinite" />
+    </circle>
+    
+    <circle cx="32" cy="32" r="34" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="0.5" stroke-dasharray="3,3">
+      <animateTransform attributeName="transform" type="rotate" from="360 32 32" to="0 32 32" dur="15s" repeatCount="indefinite" />
+    </circle>
+  </g>
+  
+  <!-- Маленькие частицы вокруг логотипа -->
+  <g>
+    <circle cx="22" cy="18" r="1" fill="#ffffff">
+      <animate attributeName="opacity" values="0;1;0" dur="3s" repeatCount="indefinite" begin="0s" />
+    </circle>
+    <circle cx="44" cy="30" r="1" fill="#ffffff">
+      <animate attributeName="opacity" values="0;1;0" dur="4s" repeatCount="indefinite" begin="1s" />
+    </circle>
+    <circle cx="28" cy="48" r="1" fill="#ffffff">
+      <animate attributeName="opacity" values="0;1;0" dur="5s" repeatCount="indefinite" begin="2s" />
+    </circle>
+    <circle cx="14" cy="34" r="1" fill="#ffffff">
+      <animate attributeName="opacity" values="0;1;0" dur="3.5s" repeatCount="indefinite" begin="0.5s" />
+    </circle>
+  </g>
+</svg> 
