@@ -204,14 +204,12 @@ const logout = () => {
 }
 
 .nav-container {
-  max-width: $container-max-width;
+  max-width: 1400px;
   height: 100%;
   margin: 0 auto;
-  padding: 0 $spacing-md;
+  padding: 0 $spacing-sm;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: $spacing-md;
 }
 
 .nav-logo {
@@ -221,7 +219,12 @@ const logout = () => {
   text-decoration: none;
   color: $text-primary;
   z-index: 2;
-  min-width: 150px;
+  min-width: 130px;
+  margin-right: $spacing-md;
+  
+  @media (min-width: $breakpoint-xl) {
+    margin-right: $spacing-lg;
+  }
 
   .logo-avatar {
     position: relative;
@@ -282,8 +285,12 @@ const logout = () => {
   display: flex;
   gap: $spacing-xs;
   
-  @media (min-width: $breakpoint-lg) {
-    justify-content: center;
+  @media (min-width: 1200px) {
+    gap: $spacing-sm;
+  }
+  
+  @media (min-width: 1400px) {
+    gap: $spacing-md;
   }
   
   .nav-link {
@@ -440,12 +447,22 @@ const logout = () => {
 .nav-actions {
   display: flex;
   align-items: center;
-  gap: $spacing-lg;
+  gap: $spacing-md;
+  margin-left: $spacing-md;
+  
+  @media (min-width: $breakpoint-xl) {
+    margin-left: $spacing-lg;
+    gap: $spacing-lg;
+  }
 }
 
 .search-bar {
   position: relative;
-  width: 200px;
+  width: 180px;
+  
+  @media (min-width: 1200px) {
+    width: 200px;
+  }
   
   @media (min-width: $breakpoint-xl) {
     width: 240px;
@@ -521,17 +538,10 @@ const logout = () => {
   align-items: center;
   gap: $spacing-xs;
   padding: $spacing-xs $spacing-sm;
-  background: linear-gradient(135deg, rgba($surface, 0.3), rgba($primary, 0.1));
-  border: 1px solid rgba($primary, 0.3);
-  border-radius: $border-radius-full;
-  cursor: pointer;
-  transition: all $transition-normal;
-  position: relative;
-  overflow: hidden;
   
-  @media (min-width: $breakpoint-md) {
+  @media (min-width: 1200px) {
     gap: $spacing-sm;
-    padding: $spacing-sm $spacing-md;
+    padding: $spacing-xs $spacing-md;
   }
 
   &:before {
@@ -907,7 +917,12 @@ const logout = () => {
 
 @media (max-width: $breakpoint-lg) {
   .nav-container {
-    gap: $spacing-sm;
+    justify-content: space-between;
+  }
+  
+  .nav-logo {
+    min-width: auto;
+    margin-right: 0;
   }
   
   .menu-toggle {
