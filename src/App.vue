@@ -60,9 +60,6 @@ html, body {
     width: 3px;
     height: 3px;
     border-radius: 50%;
-    background: rgba($primary, 0.6);
-    box-shadow: 0 0 10px rgba($primary, 0.8);
-    opacity: 0;
     animation: float 25s infinite linear;
     
     @for $i from 1 through 50 {
@@ -73,6 +70,7 @@ html, body {
         animation-duration: (10 + random(15)) * 1s;
         opacity: random(6) * 0.1;
         transform: scale(random(3) * 0.5);
+        animation: float (10 + random(15)) * 1s infinite linear, colorChange (3 + random(7)) * 1s infinite alternate;
       }
     }
   }
@@ -193,6 +191,25 @@ p {
   }
   100% {
     transform: translateY(0) translateX(0);
+  }
+}
+
+@keyframes colorChange {
+  0% {
+    background: rgba($primary, 0.6);
+    box-shadow: 0 0 10px rgba($primary, 0.8);
+  }
+  33% {
+    background: rgba($accent, 0.6);
+    box-shadow: 0 0 10px rgba($accent, 0.8);
+  }
+  66% {
+    background: rgba($success, 0.6);
+    box-shadow: 0 0 10px rgba($success, 0.8);
+  }
+  100% {
+    background: rgba($primary-light, 0.6);
+    box-shadow: 0 0 10px rgba($primary-light, 0.8);
   }
 }
 </style> 
