@@ -49,7 +49,7 @@
           <div class="search-glow" :class="{ active: isSearchFocused }"></div>
         </div>
 
-        <div class="user-avatar-container" @click="toggleUserMenu" ref="userMenuTrigger">
+        <div class="user-avatar-container" @click.stop="toggleUserMenu" ref="userMenuTrigger">
           <div class="user-avatar">
             <img :src="currentUser.avatar" :alt="currentUser.name">
             <div class="avatar-glow" :class="currentUser.status"></div>
@@ -61,7 +61,8 @@
         <v-menu
           v-model="isUserMenuOpen"
           :close-on-content-click="false"
-          :activator="userMenuTrigger"
+          activator="parent"
+          :close-on-click="false"
           class="user-menu-dropdown"
         >
           <div class="menu-content">
@@ -159,7 +160,7 @@ const navigationLinks = [
 ];
 
 const currentUser = {
-  name: 'Александр',
+  name: 'Владимир',
   role: 'Цифровой Создатель',
   avatar: 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y',
   status: 'online'
@@ -188,7 +189,10 @@ const userMenuActions = [
 
 const isCurrentRoute = (path) => route.path === path;
 
-const toggleUserMenu = () => {
+const toggleUserMenu = (event) => {
+  if (event) {
+    event.preventDefault();
+  }
   isUserMenuOpen.value = !isUserMenuOpen.value;
 };
 
