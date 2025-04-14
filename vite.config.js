@@ -3,12 +3,8 @@ import { defineConfig } from 'vite';
 
 import vue from '@vitejs/plugin-vue';
 
-// Определяем, находимся ли мы в режиме разработки или сборки для GitHub Pages
-const isGitHubPages = process.env.GITHUB_PAGES === 'true';
-const baseUrl = isGitHubPages ? '/avatar.ai/' : '/';
-
 export default defineConfig({
-  base: baseUrl,
+  base: '/avatar.ai/',  // Фиксированный базовый путь для GitHub Pages
   plugins: [vue()],
   resolve: {
     alias: {
