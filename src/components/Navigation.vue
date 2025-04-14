@@ -2,11 +2,20 @@
   <nav class="navigation" :class="{ 'nav-expanded': isMenuOpen, 'nav-hidden': !isNavbarVisible }">
     <div class="nav-container">
       <router-link to="/" class="nav-logo">
-        <div class="logo-avatar">
-          <img src="@/assets/logo.svg" alt="Avatar.AI" class="logo-image">
+        <!-- <div class="logo-avatar">
+          <object data="@/assets/svg/animated-logo.svg" type="image/svg+xml" class="logo-image animated-logo"></object>
+          <img src="@/assets/svg/logo-static.svg" alt="Avatar.AI" class="logo-image static-logo">
           <div class="logo-glow"></div>
+        </div> -->
+        <div class="logo-text-container">
+          <span class="logo-text">Avatar.AI</span>
+          <div class="text-glow-effects">
+            <div class="glow-line line-1"></div>
+            <div class="glow-line line-2"></div>
+            <div class="glow-dot dot-1"></div>
+            <div class="glow-dot dot-2"></div>
+          </div>
         </div>
-        <span class="logo-text">Avatar.AI</span>
       </router-link>
 
       <div class="nav-links-container">
@@ -203,7 +212,7 @@ const handleScroll = () => {
   }
   
   // Если открыто меню, не скрываем навбар
-  if (isMenuOpen.value) {
+  if (isMenuOpen.value || isUserMenuOpen.value) {
     isNavbarVisible.value = true;
     return;
   }
@@ -228,6 +237,10 @@ const handleScroll = () => {
 // Установка и удаление слушателя события скроллинга
 onMounted(() => {
   window.addEventListener('scroll', handleScroll, { passive: true });
+  
+  // Инициализация начального состояния
+  isNavbarVisible.value = true;
+  lastScrollTop.value = 0;
 });
 
 onUnmounted(() => {
@@ -289,6 +302,15 @@ onUnmounted(() => {
       height: 100%;
       width: 100%;
       object-fit: cover;
+      filter: drop-shadow(0 0 8px rgba($primary, 0.8));
+    }
+    
+    .animated-logo {
+      display: block;
+    }
+    
+    .static-logo {
+      display: none;
     }
     
     .logo-glow {
@@ -298,18 +320,96 @@ onUnmounted(() => {
       width: 100%;
       height: 100%;
       border-radius: 50%;
-      box-shadow: 0 0 15px rgba($primary, 0.7);
-      animation: pulse 3s infinite;
+      box-shadow: 
+        0 0 15px rgba($primary, 0.7),
+        0 0 25px rgba($accent, 0.4),
+        inset 0 0 10px rgba($primary, 0.3);
+      animation: logoGlow 4s infinite;
+      opacity: 0.8;
+      z-index: -1;
     }
   }
 
-  .logo-text {
-    font-size: $font-size-xl;
-    font-weight: $font-weight-bold;
-    background: linear-gradient(135deg, #ffffff, rgba($primary-light, 0.8));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    text-shadow: 0 0 10px rgba($primary, 0.5);
+  .logo-text-container {
+    position: relative;
+    
+    .logo-text {
+      font-size: $font-size-xl;
+      font-weight: $font-weight-bold;
+      background: linear-gradient(135deg, #ffffff 20%, rgba($primary-light, 0.8) 50%, #ffffff 80%);
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 10px rgba($primary, 0.5);
+      animation: textShine 3s linear infinite;
+      position: relative;
+      
+      &:after {
+        content: '';
+        position: absolute;
+        left: 0;
+        bottom: -2px;
+        width: 100%;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, rgba($primary, 0.8), transparent);
+        animation: borderGlow 3s infinite alternate;
+      }
+    }
+    
+    .text-glow-effects {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      
+      .glow-line {
+        position: absolute;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, $primary, transparent);
+        opacity: 0;
+        
+        &.line-1 {
+          top: 0;
+          width: 100%;
+          left: 0;
+          animation: lineGlow 4s infinite;
+          animation-delay: 0s;
+        }
+        
+        &.line-2 {
+          bottom: 0;
+          width: 100%;
+          right: 0;
+          animation: lineGlow 4s infinite;
+          animation-delay: 2s;
+        }
+      }
+      
+      .glow-dot {
+        position: absolute;
+        width: 4px;
+        height: 4px;
+        border-radius: 50%;
+        background: $primary;
+        filter: blur(1px);
+        box-shadow: 0 0 8px $primary;
+        
+        &.dot-1 {
+          top: -2px;
+          right: 0;
+          animation: dotMove 8s infinite linear;
+        }
+        
+        &.dot-2 {
+          bottom: -2px;
+          left: 0;
+          animation: dotMove 8s infinite linear reverse;
+          animation-delay: 4s;
+        }
+      }
+    }
   }
   
   &:hover {
@@ -967,6 +1067,92 @@ onUnmounted(() => {
   }
 }
 
+@keyframes logoGlow {
+  0% {
+    box-shadow: 
+      0 0 15px rgba($primary, 0.7),
+      0 0 25px rgba($accent, 0.4),
+      inset 0 0 10px rgba($primary, 0.3);
+    opacity: 0.8;
+  }
+  50% {
+    box-shadow: 
+      0 0 20px rgba($primary, 0.9),
+      0 0 35px rgba($accent, 0.6),
+      inset 0 0 15px rgba($primary, 0.5);
+    opacity: 1;
+  }
+  100% {
+    box-shadow: 
+      0 0 15px rgba($primary, 0.7),
+      0 0 25px rgba($accent, 0.4),
+      inset 0 0 10px rgba($primary, 0.3);
+    opacity: 0.8;
+  }
+}
+
+@keyframes textShine {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 200% 50%;
+  }
+}
+
+@keyframes borderGlow {
+  0% {
+    opacity: 0.3;
+    box-shadow: 0 0 4px rgba($primary, 0.3);
+  }
+  100% {
+    opacity: 1;
+    box-shadow: 0 0 8px rgba($primary, 0.8);
+  }
+}
+
+@keyframes lineGlow {
+  0% {
+    opacity: 0;
+    width: 0;
+    transform: translateX(0);
+  }
+  20% {
+    opacity: 0.5;
+    width: 50%;
+  }
+  40% {
+    opacity: 1;
+    width: 100%;
+  }
+  60% {
+    opacity: 0.5;
+    width: 50%;
+  }
+  100% {
+    opacity: 0;
+    width: 0;
+    transform: translateX(100%);
+  }
+}
+
+@keyframes dotMove {
+  0% {
+    transform: translateX(0);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+}
+
 @media (max-width: $breakpoint-lg) {
   .nav-container {
     justify-content: space-between;
@@ -1048,6 +1234,16 @@ onUnmounted(() => {
   
   .nav-logo {
     min-width: auto;
+    
+    .logo-avatar {
+      .animated-logo {
+        display: none;
+      }
+      
+      .static-logo {
+        display: block;
+      }
+    }
   }
   
   .user-avatar-container {
