@@ -734,10 +734,10 @@ onUnmounted(() => {
     position: absolute;
     top: 0;
     left: 0;
-    width: 150%;
+    width: 130%;
     height: 100%;
     background: linear-gradient(90deg, transparent, rgba($primary, 0.1), transparent);
-    transform: translateX(-100%);
+    transform: translateX(-99%);
     transition: transform 0.5s ease;
     border-radius: $border-radius-full;
   }
