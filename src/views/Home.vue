@@ -38,43 +38,16 @@
     <div class="features-section">
       <h2>Что может твой AI-аватар?</h2>
       <div class="features-grid">
-        <div class="feature-card">
-          <div class="feature-icon">
-            <v-icon size="48">mdi-brain</v-icon>
-          </div>
-          <h3>Обучение</h3>
-          <p>Аватар учится у тебя и развивается вместе с тобой</p>
-          <div class="feature-preview">
-            <div class="feature-image">
-              <v-icon size="48">mdi-brain</v-icon>
-              <img src="https://www.gravatar.com/avatar/11111111111111111111111111111111?d=identicon&s=300&f=y" alt="Learning Preview">
+        <div v-for="feature in features" :key="feature.title" class="feature-card">
+          <div class="feature-content">
+            <div class="feature-icon">
+              <v-icon size="48" :icon="feature.icon"></v-icon>
             </div>
+            <h3>{{ feature.title }}</h3>
+            <p>{{ feature.description }}</p>
           </div>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon">
-            <v-icon size="48">mdi-account-group</v-icon>
-          </div>
-          <h3>Общение</h3>
-          <p>Взаимодействуй с другими аватарами в виртуальном мире</p>
           <div class="feature-preview">
-            <div class="feature-image">
-              <v-icon size="48">mdi-account-group</v-icon>
-              <img src="https://www.gravatar.com/avatar/22222222222222222222222222222222?d=identicon&s=300&f=y" alt="Communication Preview">
-            </div>
-          </div>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon">
-            <v-icon size="48">mdi-palette</v-icon>
-          </div>
-          <h3>Кастомизация</h3>
-          <p>Создай уникальный образ и характер своего аватара</p>
-          <div class="feature-preview">
-            <div class="feature-image">
-              <v-icon size="48">mdi-palette</v-icon>
-              <img src="https://www.gravatar.com/avatar/33333333333333333333333333333333?d=identicon&s=300&f=y" alt="Customization Preview">
-            </div>
+            <img :src="feature.image" :alt="feature.title">
           </div>
         </div>
       </div>
@@ -83,34 +56,14 @@
     <div class="creation-steps">
       <h2>Как создать своего аватара?</h2>
       <div class="steps-container">
-        <div class="step-card">
-          <div class="step-number">1</div>
-          <h3>Загрузи фото</h3>
-          <p>Начни с загрузки своего фото или выбери готовый шаблон</p>
-          <div class="step-preview">
-            <div class="step-image">
-              <img src="https://www.gravatar.com/avatar/44444444444444444444444444444444?d=identicon&s=200&f=y" alt="Step 1">
-            </div>
+        <div v-for="step in steps" :key="step.number" class="step-card">
+          <div class="step-content">
+            <div class="step-number">{{ step.number }}</div>
+            <h3>{{ step.title }}</h3>
+            <p>{{ step.description }}</p>
           </div>
-        </div>
-        <div class="step-card">
-          <div class="step-number">2</div>
-          <h3>Настрой внешность</h3>
-          <p>Выбери стиль, одежду и аксессуары для своего аватара</p>
           <div class="step-preview">
-            <div class="step-image">
-              <img src="https://www.gravatar.com/avatar/55555555555555555555555555555555?d=identicon&s=200&f=y" alt="Step 2">
-            </div>
-          </div>
-        </div>
-        <div class="step-card">
-          <div class="step-number">3</div>
-          <h3>Создай характер</h3>
-          <p>Определи личность, интересы и манеру общения аватара</p>
-          <div class="step-preview">
-            <div class="step-image">
-              <img src="https://www.gravatar.com/avatar/66666666666666666666666666666666?d=identicon&s=200&f=y" alt="Step 3">
-            </div>
+            <img :src="step.image" :alt="'Step ' + step.number">
           </div>
         </div>
       </div>
@@ -119,25 +72,13 @@
     <div class="community-preview">
       <h2>Присоединяйся к сообществу</h2>
       <div class="avatars-grid">
-        <div class="avatar-card">
+        <div v-for="avatar in avatars" :key="avatar.title" class="avatar-card">
           <div class="avatar-preview">
-            <img src="https://www.gravatar.com/avatar/77777777777777777777777777777777?d=identicon&s=150&f=y" alt="Avatar 1">
-            <h4>Технический</h4>
-            <p>Инженер ИИ</p>
-          </div>
-        </div>
-        <div class="avatar-card">
-          <div class="avatar-preview">
-            <img src="https://www.gravatar.com/avatar/88888888888888888888888888888888?d=identicon&s=150&f=y" alt="Avatar 2">
-            <h4>Креативный</h4>
-            <p>Цифровой художник</p>
-          </div>
-        </div>
-        <div class="avatar-card">
-          <div class="avatar-preview">
-            <img src="https://www.gravatar.com/avatar/99999999999999999999999999999999?d=identicon&s=150&f=y" alt="Avatar 3">
-            <h4>Социальный</h4>
-            <p>Коммуникатор</p>
+            <img :src="avatar.image" :alt="avatar.title">
+            <div class="avatar-content">
+              <h4>{{ avatar.title }}</h4>
+              <p>{{ avatar.role }}</p>
+            </div>
           </div>
         </div>
       </div>
@@ -146,13 +87,107 @@
 </template>
 
 <script setup>
+import 'vue-slick-carousel/dist/vue-slick-carousel.css';
+import 'vue-slick-carousel/dist/vue-slick-carousel-theme.css';
+
+import {
+  onMounted,
+  onUnmounted,
+  ref,
+} from 'vue';
+
+import VueSlickCarousel from 'vue-slick-carousel';
+
+const isMobile = ref(false);
+const carouselSettings = {
+  dots: true,
+  infinite: true,
+  speed: 500,
+  slidesToShow: 1,
+  slidesToScroll: 1,
+  arrows: true,
+  autoplay: true,
+  autoplaySpeed: 3000,
+};
+
+const features = [
+  {
+    icon: 'mdi-brain',
+    title: 'Обучение',
+    description: 'Аватар учится у тебя и развивается вместе с тобой',
+    image: 'https://www.gravatar.com/avatar/11111111111111111111111111111111?d=identicon&s=300&f=y'
+  },
+  {
+    icon: 'mdi-account-group',
+    title: 'Общение',
+    description: 'Взаимодействуй с другими аватарами в виртуальном мире',
+    image: 'https://www.gravatar.com/avatar/22222222222222222222222222222222?d=identicon&s=300&f=y'
+  },
+  {
+    icon: 'mdi-palette',
+    title: 'Кастомизация',
+    description: 'Создай уникальный образ и характер своего аватара',
+    image: 'https://www.gravatar.com/avatar/33333333333333333333333333333333?d=identicon&s=300&f=y'
+  }
+];
+
+const steps = [
+  {
+    number: 1,
+    title: 'Загрузи фото',
+    description: 'Начни с загрузки своего фото или выбери готовый шаблон',
+    image: 'https://www.gravatar.com/avatar/44444444444444444444444444444444?d=identicon&s=200&f=y'
+  },
+  {
+    number: 2,
+    title: 'Настрой внешность',
+    description: 'Выбери стиль, одежду и аксессуары для своего аватара',
+    image: 'https://www.gravatar.com/avatar/55555555555555555555555555555555?d=identicon&s=200&f=y'
+  },
+  {
+    number: 3,
+    title: 'Создай характер',
+    description: 'Определи личность, интересы и манеру общения аватара',
+    image: 'https://www.gravatar.com/avatar/66666666666666666666666666666666?d=identicon&s=200&f=y'
+  }
+];
+
+const avatars = [
+  {
+    title: 'Технический',
+    role: 'Инженер ИИ',
+    image: 'https://www.gravatar.com/avatar/77777777777777777777777777777777?d=identicon&s=150&f=y'
+  },
+  {
+    title: 'Креативный',
+    role: 'Цифровой художник',
+    image: 'https://www.gravatar.com/avatar/88888888888888888888888888888888?d=identicon&s=150&f=y'
+  },
+  {
+    title: 'Социальный',
+    role: 'Коммуникатор',
+    image: 'https://www.gravatar.com/avatar/99999999999999999999999999999999?d=identicon&s=150&f=y'
+  }
+];
+
+const checkMobile = () => {
+  isMobile.value = window.innerWidth <= 768;
+};
+
+onMounted(() => {
+  checkMobile();
+  window.addEventListener('resize', checkMobile);
+});
+
+onUnmounted(() => {
+  window.removeEventListener('resize', checkMobile);
+});
+
 const startCreation = () => {
-  // Логика начала создания аватара
   console.log('Начало создания аватара...');
 };
 
 const learnMore = () => {
-  // Логика перехода к подробной информации
   console.log('Узнать больше...');
 };
 </script>
@@ -162,32 +197,33 @@ const learnMore = () => {
   min-height: 100vh;
   background: linear-gradient(135deg, #1a1a2e, #16213e);
   color: white;
+  overflow-x: hidden;
 }
 
 .hero-section {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: $spacing-xl;
-  min-height: 80vh;
+  padding: $spacing-lg;
+  min-height: 70vh;
   background: linear-gradient(135deg, rgba(26, 26, 46, 0.9), rgba(22, 33, 62, 0.9)),
               radial-gradient(rgba(0, 210, 255, 0.1) 1px, transparent 1px) 0 0 / 20px 20px;
 
   .hero-content {
-    max-width: 600px;
+    max-width: 500px;
 
     h1 {
-      font-size: 4rem;
-      margin-bottom: $spacing-md;
+      font-size: 3.5rem;
+      margin-bottom: $spacing-sm;
       background: linear-gradient(135deg, #00d2ff, #3a7bd5);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
 
     .subtitle {
-      font-size: 1.5rem;
+      font-size: 1.25rem;
       opacity: 0.9;
-      margin-bottom: $spacing-lg;
+      margin-bottom: $spacing-md;
     }
 
     .hero-buttons {
@@ -199,8 +235,8 @@ const learnMore = () => {
   .hero-preview {
     .avatar-preview {
       position: relative;
-      width: 400px;
-      height: 400px;
+      width: 350px;
+      height: 350px;
       border-radius: 50%;
       overflow: hidden;
       box-shadow: 0 0 50px rgba(0, 210, 255, 0.3);
@@ -226,182 +262,207 @@ const learnMore = () => {
   }
 }
 
-.features-section {
-  padding: $spacing-xl;
-  text-align: center;
-
-  h2 {
-    font-size: 3rem;
-    margin-bottom: $spacing-xl;
-    background: linear-gradient(135deg, #00d2ff, #3a7bd5);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
-
-  .features-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: $spacing-lg;
-    max-width: 1200px;
-    margin: 0 auto;
-  }
-
-  .feature-card {
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: $border-radius-lg;
-    padding: $spacing-lg;
-    transition: transform $transition-normal;
-    backdrop-filter: blur(10px);
-
-    &:hover {
-      transform: translateY(-10px);
-    }
-
-    .feature-icon {
-      color: #00d2ff;
-      margin-bottom: $spacing-md;
-    }
-
-    h3 {
-      font-size: 1.8rem;
-      margin-bottom: $spacing-sm;
-    }
-
-    p {
-      color: rgba(255, 255, 255, 0.7);
-      margin-bottom: $spacing-md;
-    }
-
-    .feature-preview {
-      border-radius: $border-radius-md;
-      overflow: hidden;
-      box-shadow: 0 0 20px rgba(0, 210, 255, 0.2);
-
-      .feature-image {
-        border-radius: $border-radius-md;
-        overflow: hidden;
-        box-shadow: 0 0 20px rgba(0, 210, 255, 0.2);
-
-        img {
-          width: 100%;
-          height: auto;
-        }
-      }
-    }
-  }
-}
-
-.creation-steps {
-  padding: $spacing-xl;
-  background: linear-gradient(135deg, rgba(26, 26, 46, 0.8), rgba(22, 33, 62, 0.8));
-
-  h2 {
-    font-size: 3rem;
-    text-align: center;
-    margin-bottom: $spacing-xl;
-    background: linear-gradient(135deg, #00d2ff, #3a7bd5);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
-
-  .steps-container {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: $spacing-lg;
-    max-width: 1200px;
-    margin: 0 auto;
-  }
-
-  .step-card {
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: $border-radius-lg;
-    padding: $spacing-lg;
-    text-align: center;
-    backdrop-filter: blur(10px);
-
-    .step-number {
-      width: 40px;
-      height: 40px;
-      background: linear-gradient(135deg, #00d2ff, #3a7bd5);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0 auto $spacing-md;
-      font-size: 1.5rem;
-      font-weight: bold;
-    }
-
-    h3 {
-      font-size: 1.5rem;
-      margin-bottom: $spacing-sm;
-    }
-
-    p {
-      color: rgba(255, 255, 255, 0.7);
-      margin-bottom: $spacing-md;
-    }
-
-    .step-preview {
-      border-radius: $border-radius-md;
-      overflow: hidden;
-      box-shadow: 0 0 20px rgba(0, 210, 255, 0.2);
-
-      .step-image {
-        border-radius: $border-radius-md;
-        overflow: hidden;
-        box-shadow: 0 0 20px rgba(0, 210, 255, 0.2);
-
-        img {
-          width: 100%;
-          height: auto;
-        }
-      }
-    }
-  }
-}
-
+.features-section,
+.creation-steps,
 .community-preview {
-  padding: $spacing-xl;
-  text-align: center;
+  padding: $spacing-lg;
+  
+  @media (max-width: $breakpoint-md) {
+    padding: $spacing-sm;
+  }
 
   h2 {
-    font-size: 3rem;
-    margin-bottom: $spacing-xl;
+    font-size: 2.5rem;
+    text-align: center;
+    margin-bottom: $spacing-lg;
     background: linear-gradient(135deg, #00d2ff, #3a7bd5);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-  }
-
-  .avatars-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: $spacing-lg;
-    max-width: 1200px;
-    margin: 0 auto;
-  }
-
-  .avatar-card {
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: $border-radius-lg;
-    overflow: hidden;
-    transition: transform $transition-normal;
-    backdrop-filter: blur(10px);
-
-    &:hover {
-      transform: translateY(-10px);
+    
+    @media (max-width: $breakpoint-md) {
+      font-size: 1.8rem;
+      margin-bottom: $spacing-md;
     }
+  }
+}
 
-    .avatar-preview {
-      padding: $spacing-md;
+.features-grid,
+.steps-container,
+.avatars-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: $spacing-lg;
+  max-width: 1200px;
+  margin: 0 auto;
+  
+  @media (max-width: $breakpoint-md) {
+    grid-template-columns: 1fr;
+    gap: $spacing-sm;
+  }
+}
 
-      h4 {
-        font-size: 1.5rem;
-        margin-bottom: $spacing-xs;
+.feature-card,
+.step-card,
+.avatar-card {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: $border-radius-lg;
+  padding: $spacing-md;
+  height: 100%;
+  backdrop-filter: blur(10px);
+  transition: transform 0.3s ease;
+  
+  @media (max-width: $breakpoint-md) {
+    padding: $spacing-sm;
+    display: flex;
+    align-items: center;
+    gap: $spacing-sm;
+  }
+}
+
+.feature-content,
+.step-content,
+.avatar-content {
+  @media (max-width: $breakpoint-md) {
+    flex: 1;
+  }
+}
+
+.feature-preview,
+.step-preview {
+  margin-top: $spacing-sm;
+  border-radius: $border-radius-md;
+  overflow: hidden;
+  
+  @media (max-width: $breakpoint-md) {
+    margin-top: 0;
+    width: 80px;
+    height: 80px;
+    flex-shrink: 0;
+  }
+  
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.feature-icon {
+  color: #00d2ff;
+  margin-bottom: $spacing-sm;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  @media (max-width: $breakpoint-md) {
+    height: 32px;
+    margin-bottom: $spacing-xs;
+  }
+}
+
+h3 {
+  font-size: 1.5rem;
+  margin-bottom: $spacing-xs;
+  
+  @media (max-width: $breakpoint-md) {
+    font-size: 1.2rem;
+    margin-bottom: $spacing-xs;
+  }
+}
+
+p {
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: $spacing-sm;
+  line-height: 1.4;
+  
+  @media (max-width: $breakpoint-md) {
+    font-size: 0.9rem;
+    margin-bottom: 0;
+  }
+}
+
+.avatar-preview {
+  text-align: center;
+  
+  @media (max-width: $breakpoint-md) {
+    display: flex;
+    align-items: center;
+    text-align: left;
+    gap: $spacing-sm;
+  }
+  
+  img {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    margin-bottom: $spacing-sm;
+    
+    @media (max-width: $breakpoint-md) {
+      width: 60px;
+      height: 60px;
+      margin-bottom: 0;
+    }
+  }
+  
+  h4 {
+    font-size: 1.3rem;
+    margin-bottom: $spacing-xs;
+    
+    @media (max-width: $breakpoint-md) {
+      font-size: 1.1rem;
+      margin-bottom: 0;
+    }
+  }
+}
+
+.step-number {
+  width: 32px;
+  height: 32px;
+  background: linear-gradient(135deg, #00d2ff, #3a7bd5);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto $spacing-sm;
+  font-weight: bold;
+  
+  @media (max-width: $breakpoint-md) {
+    width: 24px;
+    height: 24px;
+    margin: 0;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: $breakpoint-md) {
+  .features-section,
+  .creation-steps,
+  .community-preview {
+    .mobile-scroll {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scroll-snap-type: x mandatory;
+      padding: $spacing-sm $spacing-md;
+      margin: 0 -$spacing-md;
+      display: flex;
+      gap: $spacing-md;
+      
+      &::-webkit-scrollbar {
+        display: none;
       }
-
-      p {
-        color: rgba(255, 255, 255, 0.7);
+      
+      > div {
+        flex: 0 0 85%;
+        scroll-snap-align: center;
+        
+        &:first-child {
+          margin-left: $spacing-md;
+        }
+        
+        &:last-child {
+          margin-right: $spacing-md;
+        }
       }
     }
   }
@@ -419,13 +480,13 @@ const learnMore = () => {
       margin-bottom: $spacing-lg;
 
       h1 {
-        font-size: 2.5rem;
+        font-size: 2.2rem;
         margin-bottom: $spacing-sm;
       }
 
       .subtitle {
-        font-size: 1.2rem;
-        margin-bottom: $spacing-md;
+        font-size: 1.1rem;
+        margin-bottom: $spacing-sm;
       }
 
       .hero-buttons {
@@ -436,8 +497,8 @@ const learnMore = () => {
 
     .hero-preview {
       .avatar-preview {
-        width: 280px;
-        height: 280px;
+        width: 250px;
+        height: 250px;
         margin: 0 auto;
       }
     }
@@ -446,11 +507,18 @@ const learnMore = () => {
   .features-section,
   .creation-steps,
   .community-preview {
-    padding: $spacing-md;
+    padding: $spacing-sm 0;
 
     h2 {
-      font-size: 2rem;
-      margin-bottom: $spacing-lg;
+      font-size: 1.8rem;
+      margin-bottom: $spacing-md;
+      padding: 0 $spacing-sm;
+    }
+
+    .features-grid,
+    .steps-container,
+    .avatars-grid {
+      padding: 0 $spacing-sm;
     }
   }
 
@@ -464,10 +532,20 @@ const learnMore = () => {
   .feature-card,
   .step-card,
   .avatar-card {
-    padding: $spacing-md;
+    padding: $spacing-sm;
+    margin-bottom: $spacing-sm;
 
     h3 {
-      font-size: 1.5rem;
+      font-size: 1.3rem;
+    }
+
+    p {
+      font-size: 0.9rem;
+    }
+
+    .feature-preview,
+    .step-preview {
+      max-height: 160px;
     }
   }
 }
@@ -476,7 +554,7 @@ const learnMore = () => {
   .hero-section {
     .hero-content {
       h1 {
-        font-size: 2rem;
+        font-size: 1.8rem;
       }
 
       .subtitle {
@@ -495,8 +573,8 @@ const learnMore = () => {
 
     .hero-preview {
       .avatar-preview {
-        width: 240px;
-        height: 240px;
+        width: 200px;
+        height: 200px;
       }
     }
   }
@@ -505,7 +583,20 @@ const learnMore = () => {
   .creation-steps,
   .community-preview {
     h2 {
-      font-size: 1.8rem;
+      font-size: 1.5rem;
+    }
+  }
+
+  .feature-card,
+  .step-card,
+  .avatar-card {
+    .feature-preview,
+    .step-preview {
+      max-height: 140px;
+    }
+
+    img {
+      max-height: 120px;
     }
   }
 }
