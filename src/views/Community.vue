@@ -42,14 +42,11 @@
 
     <div class="community-content">
       <div class="community-sidebar">
-        <div class="search-box">
-          <v-text-field
+        <div class="search-container">
+          <SearchField
             v-model="searchQuery"
-            placeholder="Поиск..."
-            prepend-inner-icon="mdi-magnify"
-            variant="outlined"
-            density="compact"
-            hide-details
+            placeholder="Поиск в сообществе..."
+            @search="handleSearch"
           />
         </div>
 
@@ -209,6 +206,7 @@ import {
   ref,
 } from 'vue';
 
+import SearchField from '@/components/common/SearchField.vue';
 import CreatePostModal from '@/components/modals/CreatePostModal.vue';
 
 const searchQuery = ref('');
@@ -357,6 +355,11 @@ const handlePostAction = (actionId, post) => {
       break;
   }
 };
+
+const handleSearch = (query) => {
+  console.log('Searching:', query);
+  // Implement search logic
+};
 </script>
 
 <style lang="scss" scoped>
@@ -499,7 +502,7 @@ const handlePostAction = (actionId, post) => {
   position: sticky;
   top: $nav-height + $spacing-md;
   
-  .search-box {
+  .search-container {
     margin-bottom: $spacing-md;
     position: relative;
     
@@ -511,28 +514,6 @@ const handlePostAction = (actionId, post) => {
       width: 100%;
       height: 1px;
       background: linear-gradient(90deg, transparent, rgba($primary, 0.5), transparent);
-    }
-    
-    .v-text-field {
-      background: rgba($surface, 0.3);
-      border: 1px solid rgba($primary, 0.2);
-      border-radius: $border-radius-full;
-      transition: all $transition-normal;
-      overflow: hidden;
-      
-      &:focus-within {
-        background: rgba($surface-light, 0.3);
-        border-color: rgba($primary, 0.5);
-        box-shadow: 0 0 15px rgba($primary, 0.3);
-      }
-      
-      .v-field__input {
-        color: $text-primary;
-      }
-      
-      .v-field__prepend-inner {
-        color: $text-secondary;
-      }
     }
   }
 
