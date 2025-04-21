@@ -36,6 +36,7 @@
         <div class="particle"></div>
         <div class="particle"></div>
         <div class="particle"></div>
+        <div class="particle"></div>
       </div>
     </div>
 
@@ -91,9 +92,9 @@
               <v-btn
                 class="create-post-btn"
                 prepend-icon="mdi-plus"
-                @click="createPost"
+                @click="showCreateModal = true"
               >
-                <span class="btn-text">Создать пост</span>
+                <span class="btn-text d-none d-sm-inline">Сказать</span>
                 <span class="btn-glow"></span>
               </v-btn>
             </div>
@@ -194,6 +195,11 @@
         </div>
       </div>
     </div>
+
+    <CreatePostModal
+      v-model="showCreateModal"
+      @post-created="handlePostCreated"
+    />
   </div>
 </template>
 
@@ -202,6 +208,8 @@ import {
   computed,
   ref,
 } from 'vue';
+
+import CreatePostModal from '@/components/modals/CreatePostModal.vue';
 
 const searchQuery = ref('');
 const activeFilter = ref('all');
@@ -290,10 +298,23 @@ const filteredPosts = computed(() => {
   return result;
 });
 
-const createPost = () => {
-  // Логика создания поста
-  console.log('Создание поста...');
-};
+const showCreateModal = ref(false)
+
+const handlePostCreated = (post) => {
+  posts.value.unshift({
+    id: Date.now(),
+    author: {
+      name: 'Neo',
+      avatar: 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=identicon&f=y'
+    },
+    time: 'Только что',
+    content: post.content,
+    image: post.media[0] || null,
+    liked: false,
+    comments: [],
+    newComment: ''
+  })
+}
 
 const toggleLike = (post) => {
   post.liked = !post.liked;
@@ -765,6 +786,35 @@ const handlePostAction = (actionId, post) => {
           overflow: hidden;
           transition: all $transition-normal;
           box-shadow: 0 0 15px rgba($primary, 0.2);
+          display: flex;
+          align-items: center;
+          
+          @media (max-width: $breakpoint-md) {
+            width: 40px;
+            min-width: 40px;
+            height: 40px;
+            padding: 0;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            .v-btn__content {
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              width: 100%;
+              height: 100%;
+              padding: 0;
+            }
+
+            .v-icon {
+              margin: 0;
+              position: absolute;
+              top: 50%;
+              left: 50%;
+              transform: translate(-50%, -50%);
+            }
+          }
           
           &:hover {
             background: linear-gradient(135deg, rgba($primary, 0.3), rgba($accent, 0.3));
@@ -781,6 +831,10 @@ const handlePostAction = (actionId, post) => {
             color: $primary;
             filter: drop-shadow(0 0 3px rgba($primary, 0.5));
             margin-right: $spacing-sm;
+
+            @media (max-width: $breakpoint-md) {
+              margin-right: 0;
+            }
           }
           
           .btn-text {
