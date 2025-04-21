@@ -62,10 +62,11 @@
         <div class="feed-container">
           <div class="feed-header">
             <div class="feed-controls d-md-none">
-              <v-menu
+              <v-dialog
                 v-model="isFilterMenuOpen"
-                :close-on-content-click="false"
-                location="bottom"
+                width="300"
+                location="center"
+                scrollable
               >
                 <template v-slot:activator="{ props }">
                   <v-btn
@@ -78,6 +79,17 @@
                 </template>
 
                 <div class="filter-menu">
+                  <div class="filter-menu-header">
+                    <h3>Фильтры</h3>
+                    <v-btn
+                      icon="mdi-close"
+                      variant="text"
+                      size="small"
+                      class="close-btn d-md-none"
+                      @click="isFilterMenuOpen = false"
+                    />
+                  </div>
+
                   <div class="search-container">
                     <SearchField
                       v-model="searchQuery"
@@ -92,7 +104,7 @@
                     :topics="trendingTopics"
                   />
                 </div>
-              </v-menu>
+              </v-dialog>
             </div>
 
             <div class="feed-actions">
@@ -214,6 +226,7 @@
 import {
   computed,
   ref,
+  watch,
 } from 'vue';
 
 import SearchField from '@/components/common/SearchField.vue';
@@ -372,6 +385,15 @@ const handleSearch = (query) => {
   console.log('Searching:', query);
   // Implement search logic
 };
+
+// Блокировка скролла при открытых фильтрах
+watch(isFilterMenuOpen, (newValue) => {
+  if (newValue) {
+    document.body.classList.add('overflow-hidden');
+  } else {
+    document.body.classList.remove('overflow-hidden');
+  }
+});
 </script>
 
 <style lang="scss" scoped>
@@ -910,16 +932,64 @@ const handleSearch = (query) => {
 }
 
 .filter-menu {
-  background: rgba($surface, 0.95);
+  background: $surface;
   border-radius: $border-radius-lg;
-  padding: $spacing-lg;
+  padding: 0;
   min-width: 300px;
-  backdrop-filter: blur(10px);
+  max-height: 90vh;
+  overflow: hidden;
   border: 1px solid rgba($primary, 0.2);
   box-shadow: 0 4px 25px rgba($primary, 0.15);
 
+  .filter-menu-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: $spacing-md $spacing-lg;
+    border-bottom: 1px solid rgba($primary, 0.1);
+    background: rgba($surface-dark, 0.3);
+    position: sticky;
+    top: 0;
+    z-index: 1;
+
+    h3 {
+      color: $text-primary;
+      font-weight: $font-weight-semibold;
+      margin: 0;
+    }
+
+    .close-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      color: $text-secondary;
+      transition: all $transition-normal;
+      margin: -$spacing-xs;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      &:hover {
+        background: rgba($primary, 0.1);
+        color: $text-primary;
+        transform: rotate(90deg);
+      }
+
+      .v-icon {
+        font-size: 20px;
+      }
+    }
+  }
+
   .search-container {
-    margin-bottom: $spacing-md;
+    padding: $spacing-lg;
+    padding-bottom: 0;
+  }
+
+  .filters-sidebar {
+    padding: $spacing-lg;
+    overflow-y: auto;
+    max-height: calc(90vh - 150px);
   }
 }
 

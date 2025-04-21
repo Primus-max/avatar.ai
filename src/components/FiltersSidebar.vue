@@ -1,7 +1,9 @@
 <template>
   <div class="filters-sidebar">
     <div class="filters">
-      <h3>Фильтры</h3>
+      <div class="filters-header">
+        <h3>Фильтры</h3>
+      </div>
       <div class="filter-group">
         <div 
           v-for="(filter, index) in filters" 
@@ -64,10 +66,28 @@ defineEmits(['update:modelValue']);
     -webkit-backdrop-filter: blur(15px);
     border: 1px solid rgba($primary, 0.2);
     
-    h3 {
-      color: $text-primary;
+    .filters-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       margin-bottom: $spacing-md;
-      font-weight: $font-weight-semibold;
+
+      h3 {
+        color: $text-primary;
+        font-weight: $font-weight-semibold;
+        margin-bottom: 0;
+        position: relative;
+        
+        &:after {
+          content: '';
+          position: absolute;
+          bottom: -3px;
+          left: 0;
+          width: 50%;
+          height: 2px;
+          background: linear-gradient(90deg, $primary, transparent);
+        }
+      }
     }
 
     .filter-group {
