@@ -2,11 +2,6 @@
   <nav class="navigation" :class="{ 'nav-expanded': isMenuOpen, 'nav-hidden': !isNavbarVisible }">
     <div class="nav-container">
       <router-link to="/" class="nav-logo">
-        <!-- <div class="logo-avatar">
-          <object data="@/assets/svg/animated-logo.svg" type="image/svg+xml" class="logo-image animated-logo"></object>
-          <img src="@/assets/svg/logo-static.svg" alt="Avatar.AI" class="logo-image static-logo">
-          <div class="logo-glow"></div>
-        </div> -->
         <div class="logo-text-container">
           <span class="logo-text">Avatar.AI</span>
           <div class="text-glow-effects">
@@ -310,7 +305,6 @@ onUnmounted(() => {
 .nav-logo {
   display: flex;
   align-items: center;
-  gap: $spacing-sm;
   text-decoration: none;
   color: $text-primary;
   z-index: 2;
@@ -319,45 +313,6 @@ onUnmounted(() => {
   
   @media (min-width: $breakpoint-xl) {
     margin-right: $spacing-lg;
-  }
-
-  .logo-avatar {
-    position: relative;
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    overflow: hidden;
-    
-    .logo-image {
-      height: 100%;
-      width: 100%;
-      object-fit: cover;
-      filter: drop-shadow(0 0 8px rgba($primary, 0.8));
-    }
-    
-    .animated-logo {
-      display: block;
-    }
-    
-    .static-logo {
-      display: none;
-    }
-    
-    .logo-glow {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      border-radius: 50%;
-      box-shadow: 
-        0 0 15px rgba($primary, 0.7),
-        0 0 25px rgba($accent, 0.4),
-        inset 0 0 10px rgba($primary, 0.3);
-      animation: logoGlow 4s infinite;
-      opacity: 0.8;
-      z-index: -1;
-    }
   }
 
   .logo-text-container {
@@ -442,11 +397,7 @@ onUnmounted(() => {
     }
   }
   
-  &:hover {
-    .logo-glow {
-      box-shadow: 0 0 30px rgba($primary, 1);
-    }
-    
+  &:hover {    
     .logo-text {
       text-shadow: 0 0 18px rgba($primary, 0.7);
       
@@ -1295,20 +1246,35 @@ onUnmounted(() => {
   .nav-logo {
     min-width: auto;
     
-    .logo-avatar {
-      .animated-logo {
-        display: none;
-      }
-      
-      .static-logo {
-        display: block;
+    .logo-text-container {
+      .logo-text {
+        font-size: $font-size-lg;
       }
     }
   }
   
   .user-avatar-container {
+    &:before {
+      display: none;
+    }
+
     .user-name {
       display: none;
+    }
+
+    .user-avatar {
+      .avatar-glow {
+        &.online {
+          box-shadow: 0 0 15px rgba($success, 0.8);
+        }
+      }
+    }
+
+    .mdi-chevron-down {
+      margin-left: $spacing-xs;
+      display: block;
+      color: $primary;
+      filter: drop-shadow(0 0 3px rgba($primary, 0.5));
     }
   }
 }
@@ -1316,19 +1282,33 @@ onUnmounted(() => {
 @media (max-width: $breakpoint-sm) {
   .nav-logo {
     min-width: auto;
-    
-    .logo-avatar {
-      width: 28px;
-      height: 28px;
-    }
   }
   
   .nav-container {
     padding: 0 $spacing-sm;
   }
   
-  .logo-text {
-    display: none;
+  .logo-text-container {
+    display: block;
+    
+    .logo-text {
+      font-size: $font-size-md;
+    }
+  }
+
+  .user-avatar-container {
+    padding: $spacing-xs;
+    
+    .user-avatar {
+      width: 32px;
+      height: 32px;
+    }
+
+    .mdi-chevron-down {
+      display: block;
+      font-size: 16px;
+      margin-left: $spacing-xs;
+    }
   }
 }
 </style> 
