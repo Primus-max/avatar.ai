@@ -37,11 +37,12 @@
         <div class="particle"></div>
         <div class="particle"></div>
         <div class="particle"></div>
+        <div class="particle"></div>
       </div>
     </div>
 
     <div class="community-content">
-      <div class="community-sidebar">
+      <div class="community-sidebar d-none d-md-block">
         <div class="search-container">
           <SearchField
             v-model="searchQuery"
@@ -50,41 +51,50 @@
           />
         </div>
 
-        <div class="filters">
-          <h3>Фильтры</h3>
-          <div class="filter-group">
-            <div 
-              v-for="(filter, index) in filters" 
-              :key="index"
-              class="filter-item"
-              :class="{ active: activeFilter === filter.id }"
-              @click="activeFilter = filter.id"
-            >
-              <v-icon>{{ filter.icon }}</v-icon>
-              <span>{{ filter.title }}</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="trending-topics">
-          <h3>Популярные темы</h3>
-          <div class="topics-list">
-            <div 
-              v-for="(topic, index) in trendingTopics" 
-              :key="index"
-              class="topic-item"
-            >
-              <span class="topic-name">{{ topic.name }}</span>
-              <span class="topic-count">{{ topic.count }}</span>
-            </div>
-          </div>
-        </div>
+        <FiltersSidebar
+          v-model="activeFilter"
+          :filters="filters"
+          :topics="trendingTopics"
+        />
       </div>
 
       <div class="community-main">
         <div class="feed-container">
           <div class="feed-header">
-            <h2>Лента активности</h2>
+            <div class="feed-controls d-md-none">
+              <v-menu
+                v-model="isFilterMenuOpen"
+                :close-on-content-click="false"
+                location="bottom"
+              >
+                <template v-slot:activator="{ props }">
+                  <v-btn
+                    class="filter-btn"
+                    prepend-icon="mdi-filter"
+                    v-bind="props"
+                  >
+                    Фильтры
+                  </v-btn>
+                </template>
+
+                <div class="filter-menu">
+                  <div class="search-container">
+                    <SearchField
+                      v-model="searchQuery"
+                      placeholder="Поиск в сообществе..."
+                      @search="handleSearch"
+                    />
+                  </div>
+
+                  <FiltersSidebar
+                    v-model="activeFilter"
+                    :filters="filters"
+                    :topics="trendingTopics"
+                  />
+                </div>
+              </v-menu>
+            </div>
+
             <div class="feed-actions">
               <v-btn
                 class="create-post-btn"
@@ -207,10 +217,12 @@ import {
 } from 'vue';
 
 import SearchField from '@/components/common/SearchField.vue';
+import FiltersSidebar from '@/components/FiltersSidebar.vue';
 import CreatePostModal from '@/components/modals/CreatePostModal.vue';
 
 const searchQuery = ref('');
 const activeFilter = ref('all');
+const isFilterMenuOpen = ref(false);
 
 const filters = [
   { id: 'all', title: 'Все', icon: 'mdi-view-dashboard' },
@@ -497,235 +509,6 @@ const handleSearch = (query) => {
   padding: 0 $container-padding;
 }
 
-.community-sidebar {
-  width: 320px;
-  position: sticky;
-  top: $nav-height + $spacing-md;
-  
-  .search-container {
-    margin-bottom: $spacing-md;
-    position: relative;
-    
-    &:after {
-      content: '';
-      position: absolute;
-      bottom: -2px;
-      left: 0;
-      width: 100%;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, rgba($primary, 0.5), transparent);
-    }
-  }
-
-  .filters {
-    background: rgba($surface, 0.3);
-    border-radius: $border-radius-lg;
-    padding: $spacing-lg;
-    margin-bottom: $spacing-md;
-    position: relative;
-    overflow: hidden;
-    backdrop-filter: blur(15px);
-    -webkit-backdrop-filter: blur(15px);
-    border: 1px solid rgba($primary, 0.2);
-    box-shadow: 0 0 20px rgba($primary, 0.1);
-    
-    &:before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(135deg, rgba($primary, 0.05), rgba($accent, 0.05));
-      z-index: -1;
-    }
-    
-    h3 {
-      color: $text-primary;
-      margin-bottom: $spacing-md;
-      font-weight: $font-weight-semibold;
-      position: relative;
-      display: inline-block;
-      
-      &:after {
-        content: '';
-        position: absolute;
-        bottom: -3px;
-        left: 0;
-        width: 50%;
-        height: 2px;
-        background: linear-gradient(90deg, $primary, transparent);
-      }
-    }
-
-    .filter-group {
-      display: flex;
-      flex-direction: column;
-      gap: $spacing-sm;
-
-      .filter-item {
-        display: flex;
-        align-items: center;
-        padding: $spacing-sm $spacing-md;
-        border-radius: $border-radius-md;
-        cursor: pointer;
-        transition: all $transition-normal;
-        position: relative;
-        
-        &:before {
-          content: '';
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 3px;
-          height: 100%;
-          background: linear-gradient(to bottom, $primary, rgba($primary, 0));
-          opacity: 0;
-          transition: opacity $transition-normal;
-        }
-
-        .v-icon {
-          margin-right: $spacing-md;
-          color: $text-secondary;
-          transition: all $transition-normal;
-        }
-
-        span {
-          font-weight: $font-weight-medium;
-          color: $text-secondary;
-          transition: all $transition-normal;
-        }
-
-        &:hover {
-          background: rgba($primary, 0.1);
-          
-          &:before {
-            opacity: 0.5;
-          }
-          
-          .v-icon, span {
-            color: $text-primary;
-          }
-        }
-
-        &.active {
-          background: rgba($primary, 0.15);
-          box-shadow: 0 0 10px rgba($primary, 0.2);
-          
-          &:before {
-            opacity: 1;
-          }
-          
-          .v-icon, span {
-            color: $primary;
-            text-shadow: 0 0 5px rgba($primary, 0.5);
-          }
-        }
-      }
-    }
-  }
-
-  .trending-topics {
-    background: rgba($surface, 0.3);
-    border-radius: $border-radius-lg;
-    padding: $spacing-lg;
-    position: relative;
-    overflow: hidden;
-    backdrop-filter: blur(15px);
-    -webkit-backdrop-filter: blur(15px);
-    border: 1px solid rgba($primary, 0.2);
-    box-shadow: 0 0 20px rgba($primary, 0.1);
-    
-    &:before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(135deg, rgba($accent, 0.05), rgba($primary, 0.05));
-      z-index: -1;
-    }
-    
-    h3 {
-      color: $text-primary;
-      margin-bottom: $spacing-md;
-      font-weight: $font-weight-semibold;
-      position: relative;
-      display: inline-block;
-      
-      &:after {
-        content: '';
-        position: absolute;
-        bottom: -3px;
-        left: 0;
-        width: 50%;
-        height: 2px;
-        background: linear-gradient(90deg, $accent, transparent);
-      }
-    }
-
-    .topics-list {
-      display: flex;
-      flex-direction: column;
-      gap: $spacing-sm;
-
-      .topic-item {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: $spacing-sm $spacing-md;
-        border-radius: $border-radius-md;
-        cursor: pointer;
-        transition: all $transition-normal;
-        background: rgba($surface, 0.3);
-        border-left: 1px solid rgba($accent, 0.3);
-        border-bottom: 1px solid rgba($accent, 0.1);
-        
-        &:hover {
-          background: rgba($accent, 0.1);
-          transform: translateX(3px);
-          box-shadow: -3px 0 10px rgba($accent, 0.2);
-        }
-
-        .topic-name {
-          color: $primary;
-          font-weight: $font-weight-medium;
-          transition: all $transition-normal;
-          position: relative;
-          
-          &:before {
-            content: '#';
-            color: $accent;
-            margin-right: 2px;
-            opacity: 0.7;
-          }
-        }
-
-        .topic-count {
-          color: $text-secondary;
-          font-size: $font-size-sm;
-          background: rgba($surface-dark, 0.5);
-          padding: 2px 8px;
-          border-radius: $border-radius-full;
-          transition: all $transition-normal;
-        }
-        
-        &:hover {
-          .topic-name {
-            text-shadow: 0 0 5px rgba($primary, 0.5);
-          }
-          
-          .topic-count {
-            background: rgba($accent, 0.2);
-            color: $text-primary;
-          }
-        }
-      }
-    }
-  }
-}
-
 .community-main {
   flex: 1;
   
@@ -738,6 +521,26 @@ const handleSearch = (query) => {
       justify-content: space-between;
       align-items: center;
       margin-bottom: $spacing-lg;
+      
+      .feed-controls {
+        display: flex;
+        align-items: center;
+        gap: $spacing-md;
+
+        .filter-btn {
+          background: rgba($surface, 0.3);
+          border: 1px solid rgba($primary, 0.3);
+          color: $text-primary;
+          
+          &:hover {
+            background: rgba($primary, 0.1);
+          }
+        }
+
+        .search-container {
+          width: 300px;
+        }
+      }
       
       h2 {
         color: $text-primary;
@@ -1106,14 +909,134 @@ const handleSearch = (query) => {
   }
 }
 
+.filter-menu {
+  background: rgba($surface, 0.95);
+  border-radius: $border-radius-lg;
+  padding: $spacing-lg;
+  min-width: 300px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba($primary, 0.2);
+  box-shadow: 0 4px 25px rgba($primary, 0.15);
+
+  .search-container {
+    margin-bottom: $spacing-md;
+  }
+}
+
+.community-sidebar {
+  width: 320px;
+  position: sticky;
+  top: $nav-height + $spacing-md;
+  
+  .search-container {
+    margin-bottom: $spacing-md;
+    position: relative;
+    
+    &:after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba($primary, 0.5), transparent);
+    }
+  }
+
+  .filters {
+    background: rgba($surface, 0.3);
+    border-radius: $border-radius-lg;
+    padding: $spacing-lg;
+    margin-bottom: $spacing-md;
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba($primary, 0.2);
+    box-shadow: 0 0 20px rgba($primary, 0.1);
+    
+    &:before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, rgba($primary, 0.05), rgba($accent, 0.05));
+      z-index: -1;
+    }
+    
+    h3 {
+      color: $text-primary;
+      margin-bottom: $spacing-md;
+      font-weight: $font-weight-semibold;
+      position: relative;
+      display: inline-block;
+      
+      &:after {
+        content: '';
+        position: absolute;
+        bottom: -3px;
+        left: 0;
+        width: 50%;
+        height: 2px;
+        background: linear-gradient(90deg, $primary, transparent);
+      }
+    }
+
+    .filter-group {
+      display: flex;
+      flex-direction: column;
+      gap: $spacing-sm;
+    }
+  }
+
+  .trending-topics {
+    background: rgba($surface, 0.3);
+    border-radius: $border-radius-lg;
+    padding: $spacing-lg;
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba($primary, 0.2);
+    box-shadow: 0 0 20px rgba($primary, 0.1);
+    
+    &:before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, rgba($accent, 0.05), rgba($primary, 0.05));
+      z-index: -1;
+    }
+    
+    h3 {
+      color: $text-primary;
+      margin-bottom: $spacing-md;
+      font-weight: $font-weight-semibold;
+      position: relative;
+      display: inline-block;
+      
+      &:after {
+        content: '';
+        position: absolute;
+        bottom: -3px;
+        left: 0;
+        width: 50%;
+        height: 2px;
+        background: linear-gradient(90deg, $accent, transparent);
+      }
+    }
+  }
+}
+
 @media (max-width: $breakpoint-md) {
   .community-content {
     flex-direction: column;
     padding: $spacing-md;
-  }
-
-  .community-sidebar {
-    width: 100%;
   }
 }
 
