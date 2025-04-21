@@ -411,17 +411,46 @@ const learnMore = () => {
   .hero-section {
     flex-direction: column;
     text-align: center;
-    padding: $spacing-lg;
+    padding: $spacing-md;
+    min-height: auto;
+    padding-top: $spacing-xl;
 
     .hero-content {
       margin-bottom: $spacing-lg;
+
+      h1 {
+        font-size: 2.5rem;
+        margin-bottom: $spacing-sm;
+      }
+
+      .subtitle {
+        font-size: 1.2rem;
+        margin-bottom: $spacing-md;
+      }
+
+      .hero-buttons {
+        justify-content: center;
+        flex-wrap: wrap;
+      }
     }
 
     .hero-preview {
       .avatar-preview {
-        width: 300px;
-        height: 300px;
+        width: 280px;
+        height: 280px;
+        margin: 0 auto;
       }
+    }
+  }
+
+  .features-section,
+  .creation-steps,
+  .community-preview {
+    padding: $spacing-md;
+
+    h2 {
+      font-size: 2rem;
+      margin-bottom: $spacing-lg;
     }
   }
 
@@ -429,6 +458,55 @@ const learnMore = () => {
   .steps-container,
   .avatars-grid {
     grid-template-columns: 1fr;
+    gap: $spacing-md;
+  }
+
+  .feature-card,
+  .step-card,
+  .avatar-card {
+    padding: $spacing-md;
+
+    h3 {
+      font-size: 1.5rem;
+    }
+  }
+}
+
+@media (max-width: $breakpoint-sm) {
+  .hero-section {
+    .hero-content {
+      h1 {
+        font-size: 2rem;
+      }
+
+      .subtitle {
+        font-size: 1rem;
+      }
+
+      .hero-buttons {
+        flex-direction: column;
+        gap: $spacing-sm;
+        
+        .v-btn {
+          width: 100%;
+        }
+      }
+    }
+
+    .hero-preview {
+      .avatar-preview {
+        width: 240px;
+        height: 240px;
+      }
+    }
+  }
+
+  .features-section,
+  .creation-steps,
+  .community-preview {
+    h2 {
+      font-size: 1.8rem;
+    }
   }
 }
 </style> 
