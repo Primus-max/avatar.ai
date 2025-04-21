@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "license": "UNLICENSED",
-  "homepage": "https://ТВОЙ_GITHUB_ЛОГИН.github.io/avatar.ai",
+  "homepage": "https://Primus-max.github.io/avatar.ai",
   "scripts": {
     "dev": "vite",
     "build": "vite build",

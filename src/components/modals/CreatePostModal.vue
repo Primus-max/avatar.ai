@@ -182,6 +182,28 @@ const publishPost = () => {
       font-weight: $font-weight-semibold;
       margin: 0;
     }
+
+    .v-btn {
+      width: 32px;
+      height: 32px;
+      min-width: 32px;
+      border-radius: 50%;
+      margin: -$spacing-xs;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba($surface-dark, 0.7);
+      color: $text-primary;
+      transition: all $transition-normal;
+
+      &:hover {
+        background: rgba($surface-dark, 0.9);
+      }
+
+      .v-icon {
+        font-size: 18px;
+      }
+    }
   }
 
   .modal-content {
