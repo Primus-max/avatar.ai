@@ -169,7 +169,7 @@ const currentUser = {
 const userMenuActions = [
   {
     id: 'profile',
-    title: 'Твоя сущность',
+    title: 'Кабинет',
     icon: 'mdi-account-circle',
     handler: () => router.push('/avatar')
   },
