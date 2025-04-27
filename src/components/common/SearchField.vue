@@ -1,15 +1,17 @@
 <template>
-  <div class="search-bar" @click.stop>
-    <v-icon icon="mdi-magnify" class="search-icon" />
+  <div class="search-bar" :class="{ 'compact-mode': compact && !isExpanded }" @click.stop>
+    <v-icon icon="mdi-magnify" class="search-icon" @click="expandSearch" />
     <input 
       type="text" 
       :placeholder="placeholder" 
       v-model="searchValue"
+      :class="{ 'hidden': compact && !isExpanded }"
       @focus="isSearchFocused = true"
-      @blur="isSearchFocused = false"
+      @blur="handleBlur"
       @click.stop
       @input="handleInput"
       @keyup.enter="handleEnter"
+      ref="searchInput"
     >
     <div class="search-glow" :class="{ active: isSearchFocused }"></div>
   </div>
@@ -17,6 +19,7 @@
 
 <script setup>
 import {
+  nextTick,
   ref,
   watch,
 } from 'vue';
@@ -29,6 +32,10 @@ const props = defineProps({
   placeholder: {
     type: String,
     default: 'Поиск...'
+  },
+  compact: {
+    type: Boolean,
+    default: false
   }
 });
 
@@ -36,10 +43,28 @@ const emit = defineEmits(['update:modelValue', 'search']);
 
 const searchValue = ref(props.modelValue);
 const isSearchFocused = ref(false);
+const isExpanded = ref(false);
+const searchInput = ref(null);
 
 watch(() => props.modelValue, (newValue) => {
   searchValue.value = newValue;
 });
+
+const expandSearch = () => {
+  if (props.compact && !isExpanded.value) {
+    isExpanded.value = true;
+    nextTick(() => {
+      searchInput.value.focus();
+    });
+  }
+};
+
+const handleBlur = () => {
+  isSearchFocused.value = false;
+  if (props.compact && searchValue.value === '') {
+    isExpanded.value = false;
+  }
+};
 
 const handleInput = () => {
   emit('update:modelValue', searchValue.value);
@@ -54,6 +79,31 @@ const handleEnter = () => {
 .search-bar {
   position: relative;
   width: 100%;
+  transition: all $transition-normal;
+
+  &.compact-mode {
+    width: 40px;
+    height: 40px;
+    
+    .search-icon {
+      left: 50%;
+      transform: translate(-50%, -50%);
+      cursor: pointer;
+      background: rgba($surface, 0.3);
+      border: 1px solid rgba($primary, 0.3);
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      
+      &:hover {
+        background: rgba($primary, 0.1);
+        box-shadow: 0 0 15px rgba($primary, 0.2);
+      }
+    }
+  }
 
   .search-icon {
     position: absolute;
@@ -61,7 +111,6 @@ const handleEnter = () => {
     top: 50%;
     transform: translateY(-50%);
     color: $text-secondary;
-    pointer-events: none;
     z-index: 1;
     transition: all $transition-normal;
   }
@@ -78,6 +127,13 @@ const handleEnter = () => {
     transition: all $transition-normal;
     position: relative;
     z-index: 1;
+    
+    &.hidden {
+      width: 0;
+      padding: 0;
+      opacity: 0;
+      border: none;
+    }
 
     &::placeholder {
       color: $text-secondary;

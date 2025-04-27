@@ -61,23 +61,26 @@
       <div class="community-main">
         <div class="feed-container">
           <div class="feed-header">
-            <div class="feed-controls d-md-none">
-              <SearchField
-                v-model="searchQuery"
-                placeholder="Поиск в сообществе..."
-                @search="handleSearch"
-                class="mobile-search"
-              />
-              <v-btn
-                class="filter-btn"
-                icon="mdi-filter"
-                @click="isFilterMenuOpen = true"
-              />
+            <div class="feed-controls">
+              <div class="search-filter-container d-md-none">
+                <SearchField
+                  v-model="searchQuery"
+                  placeholder="Поиск в сообществе..."
+                  @search="handleSearch"
+                  class="mobile-search"
+                  :compact="true"
+                />
+                <v-btn
+                  class="control-btn circle-btn filter-btn"
+                  icon="mdi-filter"
+                  @click="isFilterMenuOpen = true"
+                />
+              </div>
             </div>
 
             <div class="feed-actions">
               <v-btn
-                class="create-post-btn"
+                class="control-btn circle-btn create-post-btn"
                 prepend-icon="mdi-plus"
                 @click="showCreateModal = true"
               >
@@ -104,6 +107,7 @@
                 <v-menu>
                   <template v-slot:activator="{ props }">
                     <v-btn
+                      class="control-btn circle-btn menu-btn"
                       icon="mdi-dots-vertical"
                       variant="text"
                       v-bind="props"
@@ -134,17 +138,20 @@
               <div class="post-actions">
                 <v-btn
                   variant="text"
+                  class="control-btn circle-btn action-btn"
                   :icon="post.liked ? 'mdi-heart' : 'mdi-heart-outline'"
                   :color="post.liked ? 'error' : ''"
                   @click="toggleLike(post)"
                 />
                 <v-btn
                   variant="text"
+                  class="control-btn circle-btn action-btn"
                   icon="mdi-comment-outline"
                   @click="commentPost(post)"
                 />
                 <v-btn
                   variant="text"
+                  class="control-btn circle-btn action-btn"
                   icon="mdi-share-variant"
                   @click="sharePost(post)"
                 />
@@ -193,10 +200,10 @@
         <div class="filter-menu-header">
           <h3>Фильтры</h3>
           <v-btn
+            class="control-btn circle-btn close-btn d-md-none"
             icon="mdi-close"
             variant="text"
             size="small"
-            class="close-btn d-md-none"
             @click="isFilterMenuOpen = false"
           />
         </div>
@@ -541,25 +548,22 @@ watch(isFilterMenuOpen, (newValue) => {
       .feed-controls {
         display: flex;
         align-items: center;
-        gap: $spacing-md;
+        
+        .search-filter-container {
+          display: flex;
+          align-items: center;
+          gap: $spacing-md;
 
-        .filter-btn {
-          background: rgba($surface, 0.3);
-          border: 1px solid rgba($primary, 0.3);
-          color: $text-primary;
-          
-          &:hover {
-            background: rgba($primary, 0.1);
+          .mobile-search {
+            width: auto;
+            margin-right: $spacing-sm;
           }
-        }
-
-        .mobile-search {
-          width: 200px;
-          margin-right: $spacing-sm;
-        }
-
-        .search-container {
-          width: 300px;
+          
+          .filter-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          }
         }
       }
       
@@ -584,48 +588,34 @@ watch(isFilterMenuOpen, (newValue) => {
         .create-post-btn {
           position: relative;
           padding: $spacing-sm $spacing-lg;
-          background: linear-gradient(135deg, rgba($primary, 0.2), rgba($accent, 0.2));
-          border: 1px solid rgba($primary, 0.5);
-          color: white;
           font-weight: $font-weight-semibold;
           overflow: hidden;
-          transition: all $transition-normal;
-          box-shadow: 0 0 15px rgba($primary, 0.2);
-          display: flex;
-          align-items: center;
+          aspect-ratio: auto;
+          border-radius: $border-radius-full;
           
           @media (max-width: $breakpoint-md) {
             width: 40px;
-            min-width: 40px;
             height: 40px;
             padding: 0;
-            display: inline-flex;
+            aspect-ratio: 1/1;
+            display: flex;
             align-items: center;
             justify-content: center;
-
-            .v-btn__content {
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              width: 100%;
-              height: 100%;
-              padding: 0;
-            }
-
-            .v-icon {
+            
+            .v-btn__prepend {
               margin: 0;
               position: absolute;
               top: 50%;
               left: 50%;
               transform: translate(-50%, -50%);
             }
+            
+            .v-icon {
+              margin-right: 0;
+            }
           }
           
           &:hover {
-            background: linear-gradient(135deg, rgba($primary, 0.3), rgba($accent, 0.3));
-            box-shadow: 0 0 20px rgba($primary, 0.4);
-            transform: translateY(-2px);
-            
             .btn-glow {
               opacity: 1;
               animation: rotateBtnGlow 2s infinite;
@@ -633,8 +623,6 @@ watch(isFilterMenuOpen, (newValue) => {
           }
           
           .v-icon {
-            color: $primary;
-            filter: drop-shadow(0 0 3px rgba($primary, 0.5));
             margin-right: $spacing-sm;
 
             @media (max-width: $breakpoint-md) {
@@ -776,6 +764,12 @@ watch(isFilterMenuOpen, (newValue) => {
         }
       }
     }
+
+    .menu-btn {
+      width: 36px;
+      height: 36px;
+      min-width: 36px;
+    }
   }
   
   .post-content {
@@ -819,13 +813,8 @@ watch(isFilterMenuOpen, (newValue) => {
       background: linear-gradient(90deg, transparent, rgba($primary, 0.2), transparent);
     }
     
-    .v-btn {
+    .action-btn {
       position: relative;
-      overflow: hidden;
-      
-      .v-icon {
-        transition: all $transition-normal;
-      }
       
       &:hover {
         .v-icon {
@@ -961,22 +950,7 @@ watch(isFilterMenuOpen, (newValue) => {
       width: 32px;
       height: 32px;
       min-width: 32px;
-      border-radius: 50%;
       margin: -$spacing-xs;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: rgba($surface-dark, 0.7);
-      color: $text-primary;
-      transition: all $transition-normal;
-
-      &:hover {
-        background: rgba($surface-dark, 0.9);
-      }
-
-      .v-icon {
-        font-size: 18px;
-      }
     }
   }
 
@@ -1133,6 +1107,48 @@ watch(isFilterMenuOpen, (newValue) => {
   }
   100% {
     transform: translateX(100%) rotate(360deg);
+  }
+}
+
+// Добавляем общие стили для кнопок
+.control-btn {
+  height: 40px;
+  min-width: 40px;
+  border-radius: $border-radius-lg;
+  position: relative;
+  background: rgba($surface, 0.3);
+  border: 1px solid rgba($primary, 0.3);
+  color: $text-primary;
+  transition: all $transition-normal;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  &:hover {
+    background: rgba($primary, 0.1);
+    box-shadow: 0 0 15px rgba($primary, 0.2);
+    transform: translateY(-2px);
+  }
+  
+  .v-icon {
+    color: $primary;
+    filter: drop-shadow(0 0 3px rgba($primary, 0.2));
+  }
+  
+  &.circle-btn {
+    width: 40px;
+    aspect-ratio: 1/1;
+    border-radius: 50%;
+    padding: 0;
+    
+    .v-btn__prepend {
+      margin-right: 0;
+      margin-inline-start: 0;
+    }
+    
+    .v-icon {
+      margin: 0;
+    }
   }
 }
 </style> 
