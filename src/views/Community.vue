@@ -62,49 +62,17 @@
         <div class="feed-container">
           <div class="feed-header">
             <div class="feed-controls d-md-none">
-              <v-dialog
-                v-model="isFilterMenuOpen"
-                width="300"
-                location="center"
-                scrollable
-              >
-                <template v-slot:activator="{ props }">
-                  <v-btn
-                    class="filter-btn"
-                    prepend-icon="mdi-filter"
-                    v-bind="props"
-                  >
-                    Фильтры
-                  </v-btn>
-                </template>
-
-                <div class="filter-menu">
-                  <div class="filter-menu-header">
-                    <h3>Фильтры</h3>
-                    <v-btn
-                      icon="mdi-close"
-                      variant="text"
-                      size="small"
-                      class="close-btn d-md-none"
-                      @click="isFilterMenuOpen = false"
-                    />
-                  </div>
-
-                  <div class="search-container">
-                    <SearchField
-                      v-model="searchQuery"
-                      placeholder="Поиск в сообществе..."
-                      @search="handleSearch"
-                    />
-                  </div>
-
-                  <FiltersSidebar
-                    v-model="activeFilter"
-                    :filters="filters"
-                    :topics="trendingTopics"
-                  />
-                </div>
-              </v-dialog>
+              <SearchField
+                v-model="searchQuery"
+                placeholder="Поиск в сообществе..."
+                @search="handleSearch"
+                class="mobile-search"
+              />
+              <v-btn
+                class="filter-btn"
+                icon="mdi-filter"
+                @click="isFilterMenuOpen = true"
+              />
             </div>
 
             <div class="feed-actions">
@@ -214,6 +182,32 @@
         </div>
       </div>
     </div>
+
+    <v-dialog
+      v-model="isFilterMenuOpen"
+      width="300"
+      location="center"
+      scrollable
+    >
+      <div class="filter-menu">
+        <div class="filter-menu-header">
+          <h3>Фильтры</h3>
+          <v-btn
+            icon="mdi-close"
+            variant="text"
+            size="small"
+            class="close-btn d-md-none"
+            @click="isFilterMenuOpen = false"
+          />
+        </div>
+
+        <FiltersSidebar
+          v-model="activeFilter"
+          :filters="filters"
+          :topics="trendingTopics"
+        />
+      </div>
+    </v-dialog>
 
     <CreatePostModal
       v-model="showCreateModal"
@@ -557,6 +551,11 @@ watch(isFilterMenuOpen, (newValue) => {
           &:hover {
             background: rgba($primary, 0.1);
           }
+        }
+
+        .mobile-search {
+          width: 200px;
+          margin-right: $spacing-sm;
         }
 
         .search-container {
