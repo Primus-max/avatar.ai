@@ -10,13 +10,10 @@
     <div class="avatar-content">
       <div class="avatar-preview">
         <div class="preview-container">
-          <img :src="currentAvatar.image" :alt="currentAvatar.name" class="preview-image">
-          <div class="preview-controls">
-            <v-btn icon="mdi-rotate-left" variant="text" @click="rotateAvatar('left')" />
-            <v-btn icon="mdi-rotate-right" variant="text" @click="rotateAvatar('right')" />
-            <v-btn icon="mdi-zoom-in" variant="text" @click="zoomAvatar('in')" />
-            <v-btn icon="mdi-zoom-out" variant="text" @click="zoomAvatar('out')" />
-          </div>
+          <AvatarModel
+            :model-type="currentAvatar.style"
+            :auto-rotate="false"
+          />
         </div>
         <div class="avatar-info">
           <h2>{{ currentAvatar.name }}</h2>
@@ -38,8 +35,9 @@
         </div>
       </div>
 
-      <div class="customization-panel">
+      <div class="panel-container">
         <v-tabs v-model="activeTab" color="primary">
+          <v-tab value="chat">Чат</v-tab>
           <v-tab value="appearance">Внешность</v-tab>
           <v-tab value="personality">Характер</v-tab>
           <v-tab value="skills">Навыки</v-tab>
@@ -47,6 +45,15 @@
         </v-tabs>
 
         <v-window v-model="activeTab">
+          <v-window-item value="chat">
+            <AvatarChat
+              :avatar-name="currentAvatar.name"
+              :avatar-image="currentAvatar.iconImage"
+              @message-sent="handleUserMessage"
+              @avatar-response="handleAvatarResponse"
+            />
+          </v-window-item>
+
           <v-window-item value="appearance">
             <div class="appearance-options">
               <div class="option-group">
@@ -254,20 +261,26 @@
                       hide-details
                     />
                   </div>
-                  <div class="behavior-item">
-                    <div class="behavior-info">
-                      <h4>Социальность</h4>
-                      <p>Уровень взаимодействия с другими аватарами</p>
-                    </div>
-                    <v-slider
-                      v-model="currentAvatar.sociality"
-                      :min="0"
-                      :max="100"
-                      step="1"
-                      color="primary"
-                      hide-details
-                    />
-                  </div>
+                </div>
+              </div>
+
+              <div class="option-group">
+                <h3>Сохранение и восстановление</h3>
+                <div class="backup-controls">
+                  <v-btn
+                    class="control-btn"
+                    prepend-icon="mdi-content-save"
+                    @click="saveAvatar"
+                  >
+                    Сохранить настройки
+                  </v-btn>
+                  <v-btn
+                    class="control-btn"
+                    prepend-icon="mdi-backup-restore"
+                    @click="resetAvatar"
+                  >
+                    Сбросить настройки
+                  </v-btn>
                 </div>
               </div>
             </div>
@@ -279,94 +292,119 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import {
+  onMounted,
+  ref,
+} from 'vue';
 
-const activeTab = ref('appearance');
+import AvatarModel from '@/components/avatar/AvatarModel.vue';
+import AvatarChat from '@/components/AvatarChat.vue';
+
+const activeTab = ref('chat');
 
 const currentAvatar = ref({
-  name: 'Мой аватар',
-  role: 'Исследователь',
-  image: 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=identicon&s=400&f=y',
+  name: 'Neo',
+  role: 'Персональный ассистент',
   level: 5,
-  experience: 1250,
-  friends: 42,
-  style: 'default',
+  experience: 2400,
+  friends: 12,
+  style: 'futuristic',
   clothes: 'casual',
-  accessories: [],
-  personality: [],
-  interests: [],
-  skills: {
-    communication: 75,
-    creativity: 60,
-    learning: 80,
-    social: 70
-  },
+  accessories: ['glasses'],
+  personality: ['friendly', 'creative'],
+  interests: ['tech', 'art'],
   language: 'Русский',
-  autonomy: 50,
-  creativity: 50,
-  sociality: 50
+  autonomy: 70,
+  creativity: 85,
+  skills: {
+    communication: 80,
+    knowledge: 70,
+    reasoning: 65,
+    creativity: 75
+  },
+  iconImage: 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=identicon&f=y'
 });
 
 const styles = [
-  { id: 'default', name: 'Стандартный', preview: 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=identicon&s=100&f=y' },
-  { id: 'futuristic', name: 'Футуристический', preview: 'https://www.gravatar.com/avatar/11111111111111111111111111111111?d=identicon&s=100&f=y' },
-  { id: 'cyberpunk', name: 'Киберпанк', preview: 'https://www.gravatar.com/avatar/22222222222222222222222222222222?d=identicon&s=100&f=y' },
-  { id: 'fantasy', name: 'Фэнтези', preview: 'https://www.gravatar.com/avatar/33333333333333333333333333333333?d=identicon&s=100&f=y' }
+  { id: 'realistic', name: 'Реалистичный', preview: 'https://www.gravatar.com/avatar/11111111111111111111111111111111?d=identicon&f=y' },
+  { id: 'anime', name: 'Аниме', preview: 'https://www.gravatar.com/avatar/22222222222222222222222222222222?d=identicon&f=y' },
+  { id: 'cartoon', name: 'Мультяшный', preview: 'https://www.gravatar.com/avatar/33333333333333333333333333333333?d=identicon&f=y' },
+  { id: 'futuristic', name: 'Футуристичный', preview: 'https://www.gravatar.com/avatar/44444444444444444444444444444444?d=identicon&f=y' }
 ];
 
 const clothesOptions = [
-  { id: 'casual', name: 'Повседневный', preview: 'https://www.gravatar.com/avatar/44444444444444444444444444444444?d=identicon&s=100&f=y' },
-  { id: 'formal', name: 'Формальный', preview: 'https://www.gravatar.com/avatar/55555555555555555555555555555555?d=identicon&s=100&f=y' },
-  { id: 'sport', name: 'Спортивный', preview: 'https://www.gravatar.com/avatar/66666666666666666666666666666666?d=identicon&s=100&f=y' },
-  { id: 'tech', name: 'Технологичный', preview: 'https://www.gravatar.com/avatar/77777777777777777777777777777777?d=identicon&s=100&f=y' }
+  { id: 'casual', name: 'Повседневная', preview: 'https://www.gravatar.com/avatar/55555555555555555555555555555555?d=identicon&f=y' },
+  { id: 'formal', name: 'Деловая', preview: 'https://www.gravatar.com/avatar/66666666666666666666666666666666?d=identicon&f=y' },
+  { id: 'sporty', name: 'Спортивная', preview: 'https://www.gravatar.com/avatar/77777777777777777777777777777777?d=identicon&f=y' },
+  { id: 'sci-fi', name: 'Sci-Fi', preview: 'https://www.gravatar.com/avatar/88888888888888888888888888888888?d=identicon&f=y' }
 ];
 
 const accessories = [
-  { id: 'glasses', name: 'Очки', preview: 'https://www.gravatar.com/avatar/88888888888888888888888888888888?d=identicon&s=100&f=y' },
-  { id: 'headphones', name: 'Наушники', preview: 'https://www.gravatar.com/avatar/99999999999999999999999999999999?d=identicon&s=100&f=y' },
-  { id: 'watch', name: 'Часы', preview: 'https://www.gravatar.com/avatar/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa?d=identicon&s=100&f=y' },
-  { id: 'bracelet', name: 'Браслет', preview: 'https://www.gravatar.com/avatar/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb?d=identicon&s=100&f=y' }
+  { id: 'glasses', name: 'Очки', preview: 'https://www.gravatar.com/avatar/99999999999999999999999999999999?d=identicon&f=y' },
+  { id: 'hat', name: 'Шляпа', preview: 'https://www.gravatar.com/avatar/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa?d=identicon&f=y' },
+  { id: 'jewelry', name: 'Украшения', preview: 'https://www.gravatar.com/avatar/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb?d=identicon&f=y' },
+  { id: 'gadget', name: 'Гаджет', preview: 'https://www.gravatar.com/avatar/cccccccccccccccccccccccccccccccc?d=identicon&f=y' }
 ];
 
 const personalityTraits = [
-  { id: 'friendly', name: 'Дружелюбный', icon: 'mdi-account-heart', description: 'Легко находит общий язык с другими' },
-  { id: 'creative', name: 'Креативный', icon: 'mdi-lightbulb', description: 'Генерирует новые идеи и решения' },
-  { id: 'analytical', name: 'Аналитический', icon: 'mdi-chart-line', description: 'Мыслит логически и структурированно' },
-  { id: 'adventurous', name: 'Авантюрный', icon: 'mdi-compass', description: 'Любит исследовать новое' }
+  { id: 'friendly', name: 'Дружелюбный', icon: 'mdi-emoticon', description: 'Общительный и располагающий к себе характер' },
+  { id: 'analytical', name: 'Аналитический', icon: 'mdi-brain', description: 'Логический подход к решению задач' },
+  { id: 'creative', name: 'Креативный', icon: 'mdi-lightbulb', description: 'Склонность к нестандартным решениям' },
+  { id: 'humorous', name: 'С чувством юмора', icon: 'mdi-emoticon-cool', description: 'Любит шутить и поднимать настроение' },
+  { id: 'calm', name: 'Спокойный', icon: 'mdi-meditation', description: 'Уравновешенный и невозмутимый' },
+  { id: 'caring', name: 'Заботливый', icon: 'mdi-heart', description: 'Проявляет внимание к чувствам и благополучию' }
 ];
 
 const interests = [
-  { id: 'art', name: 'Искусство', icon: 'mdi-palette' },
   { id: 'tech', name: 'Технологии', icon: 'mdi-laptop' },
-  { id: 'science', name: 'Наука', icon: 'mdi-flask' },
+  { id: 'art', name: 'Искусство', icon: 'mdi-palette' },
+  { id: 'science', name: 'Наука', icon: 'mdi-atom' },
+  { id: 'sports', name: 'Спорт', icon: 'mdi-basketball' },
   { id: 'music', name: 'Музыка', icon: 'mdi-music' },
-  { id: 'sports', name: 'Спорт', icon: 'mdi-run' },
-  { id: 'travel', name: 'Путешествия', icon: 'mdi-earth' }
+  { id: 'travel', name: 'Путешествия', icon: 'mdi-airplane' },
+  { id: 'books', name: 'Книги', icon: 'mdi-book-open-variant' },
+  { id: 'cooking', name: 'Кулинария', icon: 'mdi-food' }
 ];
 
 const skills = [
-  { id: 'communication', name: 'Общение', icon: 'mdi-message' },
-  { id: 'creativity', name: 'Креативность', icon: 'mdi-lightbulb' },
-  { id: 'learning', name: 'Обучение', icon: 'mdi-brain' },
-  { id: 'social', name: 'Социальность', icon: 'mdi-account-group' }
+  { id: 'communication', name: 'Коммуникация', icon: 'mdi-message-text' },
+  { id: 'knowledge', name: 'Эрудиция', icon: 'mdi-database' },
+  { id: 'reasoning', name: 'Логика', icon: 'mdi-cogs' },
+  { id: 'creativity', name: 'Творчество', icon: 'mdi-palette' }
 ];
 
 const trainingOptions = [
-  { id: 'conversation', name: 'Разговорная практика', icon: 'mdi-message', description: 'Улучшение навыков общения', progress: 60 },
-  { id: 'creativity', name: 'Креативное мышление', icon: 'mdi-lightbulb', description: 'Развитие творческих способностей', progress: 45 },
-  { id: 'learning', name: 'Быстрое обучение', icon: 'mdi-brain', description: 'Улучшение способности к обучению', progress: 75 },
-  { id: 'social', name: 'Социальные навыки', icon: 'mdi-account-group', description: 'Развитие социального интеллекта', progress: 50 }
+  { 
+    id: 'conversation', 
+    name: 'Разговорная практика', 
+    icon: 'mdi-chat', 
+    description: 'Улучшает навыки общения и коммуникации',
+    progress: 45
+  },
+  { 
+    id: 'dataAnalysis', 
+    name: 'Анализ данных', 
+    icon: 'mdi-chart-bar', 
+    description: 'Развивает логическое мышление и аналитику',
+    progress: 30
+  },
+  { 
+    id: 'creativeTasks', 
+    name: 'Творческие задания', 
+    icon: 'mdi-draw', 
+    description: 'Раскрывает творческий потенциал',
+    progress: 60
+  },
+  { 
+    id: 'knowledgeBase', 
+    name: 'Расширение базы знаний', 
+    icon: 'mdi-book-open-page-variant', 
+    description: 'Пополняет базу знаний новой информацией',
+    progress: 20
+  }
 ];
 
-const languages = ['Русский', 'English', 'Español', 'Deutsch'];
-
-const rotateAvatar = (direction) => {
-  console.log(`Поворот аватара ${direction}`);
-};
-
-const zoomAvatar = (action) => {
-  console.log(`Масштабирование ${action}`);
-};
+const languages = ['Русский', 'English', 'Español', '中文', '日本語'];
 
 const selectStyle = (styleId) => {
   currentAvatar.value.style = styleId;
@@ -377,296 +415,531 @@ const selectClothes = (clothesId) => {
 };
 
 const toggleAccessory = (accessoryId) => {
-  const index = currentAvatar.value.accessories.indexOf(accessoryId);
-  if (index === -1) {
-    currentAvatar.value.accessories.push(accessoryId);
+  const accessories = currentAvatar.value.accessories;
+  const index = accessories.indexOf(accessoryId);
+  
+  if (index !== -1) {
+    accessories.splice(index, 1);
   } else {
-    currentAvatar.value.accessories.splice(index, 1);
+    accessories.push(accessoryId);
   }
 };
 
 const toggleTrait = (traitId) => {
-  const index = currentAvatar.value.personality.indexOf(traitId);
-  if (index === -1) {
-    currentAvatar.value.personality.push(traitId);
+  const traits = currentAvatar.value.personality;
+  const index = traits.indexOf(traitId);
+  
+  if (index !== -1) {
+    traits.splice(index, 1);
   } else {
-    currentAvatar.value.personality.splice(index, 1);
+    traits.push(traitId);
   }
 };
 
 const toggleInterest = (interestId) => {
-  const index = currentAvatar.value.interests.indexOf(interestId);
-  if (index === -1) {
-    currentAvatar.value.interests.push(interestId);
+  const interests = currentAvatar.value.interests;
+  const index = interests.indexOf(interestId);
+  
+  if (index !== -1) {
+    interests.splice(index, 1);
   } else {
-    currentAvatar.value.interests.splice(index, 1);
+    interests.push(interestId);
   }
 };
 
 const startTraining = (trainingId) => {
-  console.log(`Начало тренировки: ${trainingId}`);
+  const training = trainingOptions.find(t => t.id === trainingId);
+  if (!training) return;
+  
+  training.progress += 10;
+  if (training.progress > 100) training.progress = 100;
+  
+  let skillToUpdate;
+  switch (trainingId) {
+    case 'conversation':
+      skillToUpdate = 'communication';
+      break;
+    case 'dataAnalysis':
+      skillToUpdate = 'reasoning';
+      break;
+    case 'creativeTasks':
+      skillToUpdate = 'creativity';
+      break;
+    case 'knowledgeBase':
+      skillToUpdate = 'knowledge';
+      break;
+  }
+  
+  if (skillToUpdate) {
+    const increase = Math.floor(Math.random() * 3) + 1;
+    currentAvatar.value.skills[skillToUpdate] = Math.min(
+      currentAvatar.value.skills[skillToUpdate] + increase, 
+      100
+    );
+  }
 };
+
+const saveAvatar = () => {
+  localStorage.setItem('avatar_settings', JSON.stringify(currentAvatar.value));
+  alert('Настройки аватара сохранены!');
+};
+
+const resetAvatar = () => {
+  if (confirm('Вы уверены, что хотите сбросить все настройки аватара?')) {
+    currentAvatar.value = {
+      name: 'Neo',
+      role: 'Персональный ассистент',
+      level: 1,
+      experience: 0,
+      friends: 0,
+      style: 'default',
+      clothes: 'casual',
+      accessories: [],
+      personality: ['friendly'],
+      interests: ['tech'],
+      language: 'Русский',
+      autonomy: 50,
+      creativity: 50,
+      skills: {
+        communication: 50,
+        knowledge: 50,
+        reasoning: 50,
+        creativity: 50
+      },
+      iconImage: 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=identicon&f=y'
+    };
+  }
+};
+
+const handleUserMessage = (message) => {
+  console.log('Сообщение пользователя:', message);
+};
+
+const handleAvatarResponse = (message) => {
+  console.log('Ответ аватара:', message);
+};
+
+onMounted(() => {
+  const savedSettings = localStorage.getItem('avatar_settings');
+  if (savedSettings) {
+    try {
+      currentAvatar.value = JSON.parse(savedSettings);
+    } catch (e) {
+      console.error('Ошибка при загрузке настроек аватара:', e);
+    }
+  }
+});
 </script>
 
 <style lang="scss" scoped>
 .avatar {
   min-height: 100vh;
-  background: linear-gradient(135deg, #1a1a2e, #16213e);
-  color: white;
+  color: $text-primary;
+  background: $background;
 }
 
 .avatar-header {
-  background: linear-gradient(135deg, rgba(26, 26, 46, 0.8), rgba(22, 33, 62, 0.8));
+  background: linear-gradient(135deg, $primary, $accent);
   padding: $spacing-xl;
-  margin-bottom: $spacing-lg;
-
+  color: white;
+  position: relative;
+  overflow: hidden;
+  margin-bottom: $spacing-xl;
+  
+  &:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('@/assets/grid-pattern.svg'), linear-gradient(135deg, rgba($primary, 0.8), rgba($accent, 0.8));
+    background-size: cover;
+    opacity: 0.3;
+    z-index: 0;
+  }
+  
   .header-content {
-    max-width: 1200px;
+    position: relative;
+    z-index: 2;
+    max-width: 800px;
     margin: 0 auto;
-
+    text-align: center;
+    
     h1 {
-      font-size: 3rem;
+      font-size: $font-size-4xl;
+      font-weight: $font-weight-bold;
       margin-bottom: $spacing-sm;
-      background: linear-gradient(135deg, #00d2ff, #3a7bd5);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 20px rgba($primary-dark, 0.5);
     }
-
+    
     .subtitle {
-      font-size: 1.2rem;
-      opacity: 0.8;
+      font-size: $font-size-lg;
+      font-weight: $font-weight-medium;
+      opacity: 0.9;
     }
   }
 }
 
 .avatar-content {
   display: flex;
-  max-width: 1200px;
+  flex-direction: column;
+  gap: $spacing-xl;
+  max-width: $container-max-width;
   margin: 0 auto;
-  gap: $spacing-lg;
-  padding: 0 $spacing-lg;
+  padding: 0 $container-padding;
+  
+  @media (min-width: $breakpoint-lg) {
+    flex-direction: row;
+  }
 }
 
 .avatar-preview {
-  width: 400px;
-  flex-shrink: 0;
-
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  
+  @media (min-width: $breakpoint-lg) {
+    width: 40%;
+    position: sticky;
+    top: $spacing-xl;
+    align-self: flex-start;
+  }
+  
   .preview-container {
     position: relative;
     width: 100%;
-    height: 400px;
-    border-radius: $border-radius-lg;
+    border-radius: $border-radius-xl;
     overflow: hidden;
-    box-shadow: 0 0 50px rgba(0, 210, 255, 0.3);
-    margin-bottom: $spacing-lg;
-
-    .preview-image {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .preview-controls {
-      position: absolute;
-      bottom: $spacing-md;
-      left: 50%;
-      transform: translateX(-50%);
-      display: flex;
-      gap: $spacing-sm;
-      background: rgba(0, 0, 0, 0.5);
-      padding: $spacing-sm;
-      border-radius: $border-radius-md;
-    }
+    background: rgba($surface, 0.3);
+    border: 1px solid rgba($primary, 0.3);
+    margin-bottom: $spacing-md;
+    box-shadow: 0 10px 30px rgba($background, 0.6);
   }
-
+  
   .avatar-info {
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: $border-radius-lg;
+    background: rgba($surface, 0.3);
+    border-radius: $border-radius-xl;
     padding: $spacing-lg;
-    backdrop-filter: blur(10px);
-
+    border: 1px solid rgba($primary, 0.3);
+    text-align: center;
+    
     h2 {
-      font-size: 1.8rem;
+      font-size: $font-size-2xl;
+      font-weight: $font-weight-bold;
       margin-bottom: $spacing-xs;
+      color: $text-primary;
     }
-
+    
     .role {
-      color: rgba(255, 255, 255, 0.7);
+      color: $text-secondary;
       margin-bottom: $spacing-md;
     }
-
+    
     .stats {
       display: flex;
-      justify-content: space-between;
-
+      justify-content: space-around;
+      
       .stat-item {
-        text-align: center;
-
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        
         .stat-value {
-          display: block;
-          font-size: 1.5rem;
-          font-weight: 500;
-          color: #00d2ff;
+          font-size: $font-size-xl;
+          font-weight: $font-weight-bold;
+          color: $primary;
         }
-
+        
         .stat-label {
-          font-size: 0.9rem;
-          color: rgba(255, 255, 255, 0.7);
+          font-size: $font-size-sm;
+          color: $text-secondary;
         }
       }
     }
   }
 }
 
-.customization-panel {
-  flex-grow: 1;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: $border-radius-lg;
+.panel-container {
+  flex: 1;
+  background: rgba($surface, 0.3);
+  border-radius: $border-radius-xl;
+  border: 1px solid rgba($primary, 0.3);
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba($background, 0.6);
+  
+  .v-window {
+    height: 100%;
+  }
+}
+
+.appearance-options, .personality-options, .skills-options, .settings-options {
   padding: $spacing-lg;
-  backdrop-filter: blur(10px);
-
-  .v-tabs {
-    margin-bottom: $spacing-lg;
-  }
-}
-
-.option-group {
-  margin-bottom: $spacing-xl;
-
-  h3 {
-    font-size: 1.5rem;
-    margin-bottom: $spacing-md;
-    color: #00d2ff;
-  }
-}
-
-.style-grid,
-.clothes-grid,
-.accessories-grid,
-.personality-grid,
-.interests-grid,
-.skills-grid,
-.training-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  gap: $spacing-md;
-}
-
-.style-card,
-.clothes-card,
-.accessory-card,
-.trait-card,
-.interest-card,
-.skill-card,
-.training-card {
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: $border-radius-md;
-  padding: $spacing-md;
-  text-align: center;
-  cursor: pointer;
-  transition: all $transition-normal;
-
-  &:hover {
-    transform: translateY(-5px);
-    background: rgba(255, 255, 255, 0.1);
-  }
-
-  &.active {
-    background: rgba(0, 210, 255, 0.1);
-    border: 1px solid #00d2ff;
-  }
-
-  img {
-    width: 100%;
-    height: 100px;
-    object-fit: cover;
-    border-radius: $border-radius-sm;
-    margin-bottom: $spacing-sm;
-  }
-
-  span {
-    display: block;
-    margin-bottom: $spacing-xs;
-  }
-
-  p {
-    font-size: 0.9rem;
-    color: rgba(255, 255, 255, 0.7);
-  }
-}
-
-.skill-card {
-  .skill-header {
-    display: flex;
-    align-items: center;
-    gap: $spacing-sm;
-    margin-bottom: $spacing-sm;
-
-    .v-icon {
-      color: #00d2ff;
+  overflow-y: auto;
+  max-height: 600px;
+  
+  .option-group {
+    margin-bottom: $spacing-xl;
+    
+    h3 {
+      font-size: $font-size-lg;
+      color: $text-primary;
+      margin-bottom: $spacing-md;
+      font-weight: $font-weight-semibold;
+      position: relative;
+      display: inline-block;
+      
+      &:after {
+        content: '';
+        position: absolute;
+        bottom: -5px;
+        left: 0;
+        width: 70%;
+        height: 2px;
+        background: linear-gradient(90deg, $primary, transparent);
+      }
     }
   }
-
-  .skill-level {
-    display: block;
-    font-size: 0.9rem;
-    color: rgba(255, 255, 255, 0.7);
-    margin-top: $spacing-xs;
+  
+  .style-grid, .clothes-grid, .accessories-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: $spacing-md;
+    
+    .style-card, .clothes-card, .accessory-card {
+      background: rgba($surface-dark, 0.3);
+      border-radius: $border-radius-md;
+      padding: $spacing-sm;
+      text-align: center;
+      cursor: pointer;
+      transition: all $transition-normal;
+      border: 1px solid transparent;
+      
+      &:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba($primary, 0.15);
+      }
+      
+      &.active {
+        border-color: $primary;
+        background: rgba($primary, 0.1);
+        box-shadow: 0 0 15px rgba($primary, 0.3);
+      }
+      
+      img {
+        width: 100%;
+        height: 100px;
+        object-fit: cover;
+        border-radius: $border-radius-sm;
+        margin-bottom: $spacing-sm;
+      }
+      
+      span {
+        display: block;
+        font-size: $font-size-sm;
+        color: $text-primary;
+      }
+    }
   }
-}
-
-.training-card {
-  .training-progress {
-    margin-top: $spacing-sm;
+  
+  .personality-grid, .interests-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: $spacing-md;
+    
+    .trait-card, .interest-card {
+      background: rgba($surface-dark, 0.3);
+      border-radius: $border-radius-md;
+      padding: $spacing-sm;
+      text-align: center;
+      cursor: pointer;
+      transition: all $transition-normal;
+      border: 1px solid transparent;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      
+      &:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba($primary, 0.15);
+      }
+      
+      &.active {
+        border-color: $primary;
+        background: rgba($primary, 0.1);
+        box-shadow: 0 0 15px rgba($primary, 0.3);
+      }
+      
+      .v-icon {
+        font-size: 32px;
+        color: $primary;
+        margin-bottom: $spacing-sm;
+      }
+      
+      span {
+        font-weight: $font-weight-medium;
+        margin-bottom: $spacing-xs;
+        color: $text-primary;
+      }
+      
+      p {
+        font-size: $font-size-xs;
+        color: $text-secondary;
+        line-height: 1.4;
+      }
+    }
   }
-}
-
-.settings-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: $spacing-lg;
-}
-
-.setting-item {
-  label {
-    display: block;
-    margin-bottom: $spacing-xs;
-    color: rgba(255, 255, 255, 0.7);
+  
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: $spacing-md;
+    
+    .skill-card {
+      background: rgba($surface-dark, 0.3);
+      border-radius: $border-radius-md;
+      padding: $spacing-md;
+      
+      .skill-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: $spacing-sm;
+        
+        .v-icon {
+          color: $primary;
+          margin-right: $spacing-sm;
+        }
+        
+        span {
+          font-weight: $font-weight-medium;
+          color: $text-primary;
+        }
+      }
+      
+      .skill-level {
+        display: block;
+        font-size: $font-size-xs;
+        color: $text-secondary;
+        margin-top: $spacing-xs;
+        text-align: right;
+      }
+    }
   }
-}
-
-.behavior-settings {
-  .behavior-item {
-    margin-bottom: $spacing-lg;
-
-    .behavior-info {
-      margin-bottom: $spacing-sm;
-
-      h4 {
-        font-size: 1.1rem;
+  
+  .training-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: $spacing-md;
+    
+    .training-card {
+      background: rgba($surface-dark, 0.3);
+      border-radius: $border-radius-md;
+      padding: $spacing-md;
+      cursor: pointer;
+      transition: all $transition-normal;
+      border: 1px solid transparent;
+      display: flex;
+      flex-direction: column;
+      
+      &:hover {
+        transform: translateY(-3px);
+        background: rgba($surface, 0.4);
+        border-color: rgba($primary, 0.3);
+        box-shadow: 0 5px 15px rgba($primary, 0.15);
+      }
+      
+      .v-icon {
+        color: $primary;
+        margin-bottom: $spacing-sm;
+        font-size: 28px;
+      }
+      
+      span {
+        font-weight: $font-weight-medium;
+        margin-bottom: $spacing-xs;
+        color: $text-primary;
+      }
+      
+      p {
+        font-size: $font-size-sm;
+        color: $text-secondary;
+        line-height: 1.4;
+        margin-bottom: $spacing-md;
+      }
+      
+      .training-progress {
+        margin-top: auto;
+      }
+    }
+  }
+  
+  .settings-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: $spacing-md;
+    
+    .setting-item {
+      margin-bottom: $spacing-md;
+      
+      label {
+        display: block;
+        font-size: $font-size-sm;
+        color: $text-secondary;
         margin-bottom: $spacing-xs;
       }
-
-      p {
-        color: rgba(255, 255, 255, 0.7);
-        font-size: 0.9rem;
+    }
+  }
+  
+  .behavior-settings {
+    .behavior-item {
+      margin-bottom: $spacing-lg;
+      
+      .behavior-info {
+        margin-bottom: $spacing-sm;
+        
+        h4 {
+          color: $text-primary;
+          font-weight: $font-weight-medium;
+          margin-bottom: 2px;
+        }
+        
+        p {
+          font-size: $font-size-sm;
+          color: $text-secondary;
+        }
       }
     }
   }
+  
+  .backup-controls {
+    display: flex;
+    gap: $spacing-md;
+    flex-wrap: wrap;
+  }
 }
 
-@media (max-width: $breakpoint-md) {
-  .avatar-content {
-    flex-direction: column;
-    padding: $spacing-md;
+.control-btn {
+  height: 40px;
+  min-width: 40px;
+  border-radius: $border-radius-lg;
+  position: relative;
+  background: rgba($surface, 0.3);
+  border: 1px solid rgba($primary, 0.3);
+  color: $text-primary;
+  transition: all $transition-normal;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  &:hover {
+    background: rgba($primary, 0.1);
+    box-shadow: 0 0 15px rgba($primary, 0.2);
+    transform: translateY(-2px);
   }
-
-  .avatar-preview {
-    width: 100%;
-  }
-
-  .settings-grid {
-    grid-template-columns: 1fr;
+  
+  .v-icon {
+    color: $primary;
+    filter: drop-shadow(0 0 3px rgba($primary, 0.2));
   }
 }
 </style> 
