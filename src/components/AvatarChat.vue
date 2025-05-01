@@ -45,6 +45,7 @@
 
 <script setup>
 import {
+  computed,
   defineEmits,
   defineProps,
   nextTick,
@@ -53,31 +54,65 @@ import {
   watch,
 } from 'vue';
 
+import AvatarAI from '@/services/avatarAI';
+import AvatarMemory from '@/services/avatarMemory';
+
 const props = defineProps({
   avatarName: {
     type: String,
     default: 'Neo'
   },
+  userName: {
+    type: String,
+    default: 'Vladimir'
+  },
   avatarImage: {
     type: String,
     default: 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=identicon&f=y'
   },
+  avatarSettings: {
+    type: Object,
+    default: () => ({})
+  },
   initialMessages: {
     type: Array,
-    default: () => [{
-      from: 'avatar',
-      text: 'Привет! Я твой персональный AI-аватар. Чем я могу помочь тебе сегодня?',
-      time: '12:30'
-    }]
+    default: () => []
+  },
+  debugMode: {
+    type: Boolean,
+    default: false
   }
 });
 
-const emit = defineEmits(['message-sent', 'avatar-response']);
+const emit = defineEmits(['message-sent', 'avatar-response', 'memory-updated']);
 
-const messages = ref([...props.initialMessages]);
+const messages = ref([]);
 const isTyping = ref(false);
 const inputMessage = ref('');
 const chatMessagesRef = ref(null);
+
+// Инициализируем сервисы
+const avatarMemory = ref(new AvatarMemory(props.avatarName, props.userName));
+const avatarAI = ref(new AvatarAI(avatarMemory.value, {
+  debugMode: props.debugMode,
+  fallbackMode: true
+}));
+
+// При изменении настроек аватара обновляем память
+watch(() => props.avatarSettings, (newSettings) => {
+  if (newSettings && Object.keys(newSettings).length > 0) {
+    avatarMemory.value.updateAvatarInfo(newSettings);
+    
+    if (props.debugMode) {
+      console.log('Обновлены настройки аватара в памяти:', newSettings);
+    }
+  }
+}, { deep: true });
+
+// Эмитим событие обновления памяти для родительского компонента
+watch(() => avatarMemory.value.memoryData, () => {
+  emit('memory-updated', avatarMemory.value.memoryData);
+}, { deep: true });
 
 // Прокрутка чата вниз
 const scrollToBottom = () => {
@@ -89,21 +124,28 @@ const scrollToBottom = () => {
   });
 };
 
+// Форматирование времени для сообщений
+const getCurrentTime = () => {
+  return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+};
+
 // Отправка сообщения
-const sendMessage = () => {
+const sendMessage = async () => {
   if (!inputMessage.value.trim()) return;
 
+  const messageText = inputMessage.value.trim();
+  
   // Добавляем сообщение пользователя в чат
   const userMessage = {
     from: 'user',
-    text: inputMessage.value,
-    time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    text: messageText,
+    time: getCurrentTime()
   };
   
   messages.value.push(userMessage);
   emit('message-sent', userMessage);
   
-  const messageText = inputMessage.value;
+  // Очищаем поле ввода
   inputMessage.value = '';
   
   // Прокручиваем чат вниз
@@ -112,18 +154,18 @@ const sendMessage = () => {
   // Показываем индикатор набора текста
   isTyping.value = true;
   
-  // Имитируем ответ от аватара
-  setTimeout(() => {
-    isTyping.value = false;
+  try {
+    // Получаем ответ от AI
+    const response = await avatarAI.value.sendMessage(messageText);
     
-    // Получаем ответ (в будущем здесь будет API-запрос)
-    const response = getAIResponse(messageText);
+    // Скрываем индикатор набора текста
+    isTyping.value = false;
     
     // Добавляем ответ от аватара
     const avatarResponse = {
       from: 'avatar',
       text: response,
-      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      time: getCurrentTime()
     };
     
     messages.value.push(avatarResponse);
@@ -131,42 +173,57 @@ const sendMessage = () => {
     
     // Прокручиваем чат вниз
     scrollToBottom();
-  }, 1000 + Math.random() * 1000);
+  } catch (error) {
+    console.error('Ошибка при получении ответа от аватара:', error);
+    
+    // Скрываем индикатор набора текста
+    isTyping.value = false;
+    
+    // Добавляем сообщение об ошибке
+    messages.value.push({
+      from: 'avatar',
+      text: 'Извини, я временно не могу ответить. Пожалуйста, попробуй позже.',
+      time: getCurrentTime()
+    });
+    
+    scrollToBottom();
+  }
 };
 
-// Временная функция для симуляции ответов аватара
-const getAIResponse = (message) => {
-  const lowercaseMsg = message.toLowerCase();
+// Очистка истории чата
+const clearChat = () => {
+  messages.value = [];
+  avatarAI.value.clearConversation();
+};
+
+// Экспортируем функции для использования извне
+defineExpose({
+  clearChat,
+  avatarMemory: avatarMemory.value,
+  avatarAI: avatarAI.value
+});
+
+// Инициализация при загрузке компонента
+onMounted(async () => {
+  // Загружаем начальные сообщения, если их нет
+  if (props.initialMessages.length > 0) {
+    messages.value = [...props.initialMessages];
+  } else {
+    // Приветственное сообщение от аватара
+    messages.value.push({
+      from: 'avatar',
+      text: 'Привет! Я твой персональный AI-аватар. Чем я могу помочь тебе сегодня?',
+      time: getCurrentTime()
+    });
+  }
   
-  if (lowercaseMsg.includes('привет') || lowercaseMsg.includes('здравствуй')) {
-    return 'Привет! Рад видеть тебя снова. Как я могу помочь?';
-  }
-  else if (lowercaseMsg.includes('как дела') || lowercaseMsg.includes('как ты')) {
-    return 'У меня всё отлично! Я постоянно обучаюсь новому. А как твои дела?';
-  }
-  else if (lowercaseMsg.includes('погода')) {
-    return 'Я пока не могу узнать погоду в реальном времени, но в будущем это будет возможно!';
-  }
-  else if (lowercaseMsg.includes('умеешь') || lowercaseMsg.includes('можешь')) {
-    return 'Я могу поддержать разговор, помогать с задачами, давать рекомендации и многое другое. Мои возможности будут расширяться со временем!';
-  }
-  else if (lowercaseMsg.includes('кто ты') || lowercaseMsg.includes('что ты такое')) {
-    return `Я ${props.avatarName}, твой персональный AI-аватар. Я создан, чтобы помогать тебе в различных задачах и быть твоим цифровым компаньоном.`;
-  }
-  else {
-    const responses = [
-      'Интересная мысль! Давай обсудим это подробнее.',
-      'Я понимаю, о чём ты говоришь. Хочешь узнать об этом больше?',
-      'Это хороший вопрос. В будущих обновлениях я смогу отвечать на него более детально.',
-      'Я обрабатываю твой запрос. В полной версии я смогу дать более развёрнутый ответ.',
-      'Спасибо за сообщение! Я постоянно учусь и скоро буду более полезным.'
-    ];
-    return responses[Math.floor(Math.random() * responses.length)];
-  }
-};
-
-// Прокручиваем чат вниз при загрузке компонента
-onMounted(() => {
+  // Обновляем информацию об аватаре в памяти
+  avatarMemory.value.updateAvatarInfo({
+    avatarName: props.avatarName,
+    role: props.avatarSettings.role || 'Персональный ассистент'
+  });
+  
+  // Прокручиваем чат вниз
   scrollToBottom();
 });
 
@@ -224,6 +281,7 @@ watch(messages, () => {
         p {
           margin: 0;
           color: $text-primary;
+          white-space: pre-line;
         }
         
         .message-time {

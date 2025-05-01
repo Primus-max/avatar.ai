@@ -47,10 +47,15 @@
         <v-window v-model="activeTab">
           <v-window-item value="chat">
             <AvatarChat
+              ref="avatarChatRef"
               :avatar-name="currentAvatar.name"
+              :user-name="currentAvatar.userName"
               :avatar-image="currentAvatar.iconImage"
+              :avatar-settings="currentAvatar"
+              :debug-mode="false"
               @message-sent="handleUserMessage"
               @avatar-response="handleAvatarResponse"
+              @memory-updated="handleMemoryUpdate"
             />
           </v-window-item>
 
@@ -301,6 +306,7 @@ import AvatarModel from '@/components/avatar/AvatarModel.vue';
 import AvatarChat from '@/components/AvatarChat.vue';
 
 const activeTab = ref('chat');
+const avatarChatRef = ref(null);
 
 const currentAvatar = ref({
   name: 'Neo',
@@ -479,9 +485,52 @@ const startTraining = (trainingId) => {
   }
 };
 
+const handleUserMessage = (message) => {
+  console.log('Сообщение пользователя:', message);
+  
+  // Здесь можно добавить логику для обработки сообщений пользователя
+  // Например, извлечение команд или намерений
+};
+
+const handleAvatarResponse = (message) => {
+  console.log('Ответ аватара:', message);
+};
+
+const handleMemoryUpdate = (memoryData) => {
+  console.log('Обновление памяти аватара:', memoryData);
+  
+  // Если в памяти есть информация о пользователе, можно обновить интерфейс
+  if (memoryData.userInfo && memoryData.userInfo.name) {
+    // Например, показать имя пользователя где-то в интерфейсе
+  }
+};
+
 const saveAvatar = () => {
   localStorage.setItem('avatar_settings', JSON.stringify(currentAvatar.value));
-  alert('Настройки аватара сохранены!');
+  
+  // Обновляем информацию в памяти аватара
+  if (avatarChatRef.value && avatarChatRef.value.avatarMemory) {
+    avatarChatRef.value.avatarMemory.updateAvatarInfo({
+      avatarName: currentAvatar.value.name,
+      role: currentAvatar.value.role,
+      personality: currentAvatar.value.personality,
+      interests: currentAvatar.value.interests,
+      language: currentAvatar.value.language,
+      autonomy: currentAvatar.value.autonomy,
+      creativity: currentAvatar.value.creativity,
+      skills: currentAvatar.value.skills
+    });
+    
+    // Обновляем предпочтения
+    avatarChatRef.value.avatarMemory.updatePreferences({
+      personality: currentAvatar.value.personality,
+      interests: currentAvatar.value.interests
+    });
+    
+    alert('Настройки аватара сохранены и применены!');
+  } else {
+    alert('Настройки аватара сохранены!');
+  }
 };
 
 const resetAvatar = () => {
@@ -508,15 +557,21 @@ const resetAvatar = () => {
       },
       iconImage: 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=identicon&f=y'
     };
+    
+    // Очищаем память аватара
+    if (avatarChatRef.value && avatarChatRef.value.avatarMemory) {
+      avatarChatRef.value.avatarMemory.clearMemory();
+      
+      // Обновляем базовую информацию об аватаре
+      avatarChatRef.value.avatarMemory.updateAvatarInfo({
+        avatarName: currentAvatar.value.name,
+        role: currentAvatar.value.role
+      });
+      
+      // Очищаем историю чата
+      avatarChatRef.value.clearChat();
+    }
   }
-};
-
-const handleUserMessage = (message) => {
-  console.log('Сообщение пользователя:', message);
-};
-
-const handleAvatarResponse = (message) => {
-  console.log('Ответ аватара:', message);
 };
 
 onMounted(() => {
